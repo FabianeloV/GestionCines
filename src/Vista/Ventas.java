@@ -25,4 +25,5 @@ public class Ventas {
     private JRadioButton a14RadioButton;
     private JRadioButton a15RadioButton;
     private JComboBox comboBox1;
+    private JLabel Horario;
 }
