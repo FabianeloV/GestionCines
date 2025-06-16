@@ -1,0 +1,184 @@
+@startuml
+
+' Enumeraciones
+enum Rol {
+  ADMINISTRADOR
+  TAQUILLA
+  OPERADOR
+}
+
+enum EstadoSala {
+  DISPONIBLE
+  OCUPADA
+  MANTENIMIENTO
+}
+
+' ======= Gestión de Cartelera =======
+class Pelicula {
+  - id: int
+  - titulo: String
+  - sinopsis: String
+  - duracionMinutos: int
+  - genero: String
+  - clasificacion: String
+  - idioma: String
+  - fechaEstreno: Date
+  + editarPelicula(...)
+  + obtenerFichaTecnica(): String
+}
+
+class Programacion {
+  - id: int
+  - pelicula: Pelicula
+  - sala: Sala
+  - fecha: Date
+  - horaInicio: Time
+  + asignarPelicula(...)
+  + obtenerPorCiudad(ciudad: String): List<Programacion>
+}
+
+Programacion --> Pelicula
+Programacion --> Sala
+
+' ======= Ventas y Reservas =======
+class Ticket {
+  - id: int
+  - cliente: Cliente
+  - funcion: Programacion
+  - asientos: List<Asiento>
+  - fechaVenta: Date
+  - precioFinal: double
+  - codigoQR: String
+  + generarQR()
+  + imprimir()
+}
+
+class ReservaSala {
+  - id: int
+  - sala: Sala
+  - fechaEvento: Date
+  - horaInicio: Time
+  - horaFin: Time
+  - descripcionEvento: String
+  - cliente: Cliente
+  + confirmarReserva(): boolean
+}
+
+Ticket --> Cliente
+Ticket --> Programacion
+Ticket --> "0..*" Asiento
+ReservaSala --> Sala
+ReservaSala --> Cliente
+
+' ======= Gestión de Usuarios y Clientes =======
+class Cliente {
+  - id: int
+  - nombre: String
+  - correo: String
+  - puntos: int
+  - membresiaActiva: boolean
+  + acumularPuntos(puntos: int)
+  + aplicarDescuento(): boolean
+}
+
+class UsuarioInterno {
+  - id: int
+  - usuario: String
+  - contraseña: String
+  - rol: Rol
+  + autenticar(password: String): boolean
+  + obtenerPermisos(): List<String>
+}
+
+' ======= Control de Salas =======
+class Sala {
+  - id: int
+  - nombre: String
+  - capacidad: int
+  - estado: EstadoSala
+  - asientos: List<Asiento>
+  + cambiarEstado(estado: EstadoSala)
+  + configurarAsientos(filas: int, columnas: int)
+}
+
+class Asiento {
+  - fila: int
+  - columna: int
+  - ocupado: boolean
+  + reservar(): boolean
+  + liberar(): boolean
+}
+
+Sala --> "0..*" Asiento
+
+' ======= Reportes y Estadísticas =======
+class Reporte {
+  - fechaInicio: Date
+  - fechaFin: Date
+  - tipo: String
+  + generarReporteIngresos()
+  + generarReporteAsistencia()
+  + exportarPDF()
+  + exportarExcel()
+}
+
+' ======= Configuración General =======
+class Catalogo {
+  - ciudades: List<Ciudad>
+  - cines: List<Cine>
+  - salas: List<Sala>
+  - horarios: List<Horario>
+  + agregarCiudad(ciudad: Ciudad)
+  + agregarCine(cine: Cine)
+  + agregarSala(sala: Sala)
+}
+
+class Promocion {
+  - id: int
+  - descripcion: String
+  - descuento: double
+  - fechaInicio: Date
+  - fechaFin: Date
+  + esValida(fecha: Date): boolean
+  + aplicarDescuento(precio: double): double
+}
+
+class Cine {
+  - id: int
+  - nombre: String
+  - ciudad: Ciudad
+  - salas: List<Sala>
+}
+
+class Ciudad {
+  - id: int
+  - nombre: String
+}
+
+class Horario {
+  - id: int
+  - horaInicio: Time
+}
+
+Catalogo --> "0..*" Ciudad
+Catalogo --> "0..*" Cine
+Catalogo --> "0..*" Sala
+Catalogo --> "0..*" Horario
+Cine --> Ciudad
+Cine --> "0..*" Sala
+
+' ======= Utilidades =======
+class Seguridad {
+  + verificarAcceso(usuario: UsuarioInterno, accion: String): boolean
+  + registrarLogAcceso(usuario: UsuarioInterno): void
+}
+
+class SesionUsuario {
+  - usuario: UsuarioInterno
+  - inicioSesion: Date
+  - tokenSesion: String
+}
+
+SesionUsuario --> UsuarioInterno
+
+@enduml
