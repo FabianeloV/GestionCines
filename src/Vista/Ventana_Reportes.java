@@ -11,4 +11,5 @@ public class Ventana_Reportes extends JFrame {
     public JButton aceptarButton;
     public JButton cancelarButton;
     public JTable tableReportes;
+    public JPanel PrincipalReportes;
 }

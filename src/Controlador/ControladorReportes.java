@@ -29,7 +29,9 @@ public class ControladorReportes implements ActionListener, Serializable {
         this.vista.setTitle("Reportes Cine");
         //centrar la ventana
         this.vista.setLocationRelativeTo(null);
+        this.vista.setContentPane(this.vista.PrincipalReportes);
         this.vista.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        this.vista.setSize(800, 600);
         this.vista.setVisible(true);
     }
 
@@ -44,25 +46,26 @@ public class ControladorReportes implements ActionListener, Serializable {
         String fechaInicioStr = vista.textField1.getText();
         String fechaFinStr = vista.textField2.getText();
 
-        LocalDate fechaInicio;
-        LocalDate fechaFin;
+        LocalDate fechaInicio = null;
+        LocalDate fechaFin = null;
 
         try{
             DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
             fechaInicio = LocalDate.parse(fechaInicioStr,formato);
             fechaFin = LocalDate.parse(fechaFinStr,formato);
         }catch (DateTimeParseException ex){
-            JOptionPane.showMessageDialog(vista, "Formato de fecha incorrecto. Usa yyyy-MM-dd.");
-            return;
+            JOptionPane.showMessageDialog(vista, "Formato de fecha incorrecto. Usa dd/MM/yyyy.");
         }
 
         //cargamos todos lo reportes desde el archivo
         List<Reporte> todosReportes = LectorArchivos.leerReportesArchivo("reportes.txt");
 
         //filtar por el tipo de reporte y fecha
+        LocalDate finalFechaInicio = fechaInicio;
+        LocalDate finalFechaFin = fechaFin;
         List<Reporte> filtrados = todosReportes.stream()
                 .filter(r -> r.getCategoriaReporte().equalsIgnoreCase(modelo.getCategoriaReporte()))
-                .filter(r -> !r.getFecha().isBefore(fechaInicio) && !r.getFecha().isAfter(fechaFin))
+                .filter(r -> !r.getFecha().isBefore(finalFechaInicio) && !r.getFecha().isAfter(finalFechaFin))
                 .toList();
 
         if(filtrados.isEmpty()){
@@ -72,6 +75,10 @@ public class ControladorReportes implements ActionListener, Serializable {
             llenarTabla(filtrados);
         }
     }
+
+
+
+
 
     public void llenarTabla(List<Reporte> lista){
         String[] colunmas ={"Categoria","Nombre","Fecha ","Valor"};
@@ -94,6 +101,7 @@ public class ControladorReportes implements ActionListener, Serializable {
         limpiarTabla();
     }
 
+
     public void limpiarTabla(){
         DefaultTableModel modeloTabla = (DefaultTableModel) vista.tableReportes.getModel();
         modeloTabla.setRowCount(0);
@@ -101,6 +109,17 @@ public class ControladorReportes implements ActionListener, Serializable {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-
+        if (e.getSource() == vista.aceptarButton) {
+            cargarReporte(); // Metodo que crearemos enseguida
+        } else if (e.getSource() == vista.cancelarButton) {
+            limpiarCampos(); // Otro metodo auxiliar
+        }
     }
+
+
+    public static void main(String[] args) {
+            ControladorReportes controlador = new ControladorReportes();
+            controlador.cargarReporte();
+        }
+
 }
