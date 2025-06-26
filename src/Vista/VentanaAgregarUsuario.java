@@ -2,9 +2,9 @@ package Vista;
 
 import javax.swing.*;
 
-public class VentanaAgregarUsuario {
-    private JTextField textField1;
-    private JPasswordField passwordField1;
-    private JComboBox comboBox1;
-    private JButton crearButton;
+public class VentanaAgregarUsuario extends javax.swing.JFrame {
+    public JTextField textField1;
+    public JPasswordField passwordField1;
+    public JComboBox comboBox1;
+    public JButton crearButton;
 }
