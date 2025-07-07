@@ -53,6 +53,8 @@ public class ControladorVentanaReportes implements ActionListener {
 
             //si todo esta bien se llama a logica de generar reportes
         }
+
+
     }
 
     private void mostrarError(String mensaje) {
