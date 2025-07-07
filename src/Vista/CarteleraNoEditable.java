@@ -3,23 +3,18 @@ package Vista;
 import Modelo.Pelicula;
 import javax.swing.*;
 import java.awt.*;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.List;
 
-public class CarteleraEditable extends JFrame {
+public class CarteleraNoEditable extends JFrame {
     private PanelConFondo panelPrincipal;
     private JScrollPane panelScroll;
     private JPanel panelMain;
     private JPanel panelTitulo;
-    private JButton añadirPeliculaButton;
-    private JButton borrarPeliculaButton;
-    private JButton editarButton;
-    private JButton btnBack;
     private JPanel barraInferior;
+    private JButton procederAlPagoButton;
+    private JButton btnBack;
 
-
-    public CarteleraEditable() {
+    public CarteleraNoEditable() {
         initComponents();
     }
 
@@ -41,34 +36,29 @@ public class CarteleraEditable extends JFrame {
         panelScroll.setOpaque(false);
         panelScroll.getViewport().setOpaque(false);
 
-        añadirPeliculaButton = new JButton("Añadir Película");
-        editarButton = new JButton("Editar Película");
-        borrarPeliculaButton = new JButton("Eliminar Película");
+        procederAlPagoButton = new JButton("Proceder al Pago");
 
         panelTitulo.setOpaque(false);
         barraInferior.setOpaque(false);
+        barraInferior.setLayout(new BorderLayout());
 
         btnBack = crearBotonPanel("", "/Sources/contorno-fino-de-punta-de-flecha-a-la-izquierda.png",20,30);
         btnBack.setOpaque(false);
-        barraInferior.add(btnBack, BorderLayout.WEST);
+        barraInferior.add(btnBack, BorderLayout.WEST); // A la izquierda
+        barraInferior.add(procederAlPagoButton, BorderLayout.EAST); // A la derecha
 
-        panelTitulo.add(añadirPeliculaButton);
-        panelTitulo.add(editarButton);
-        panelTitulo.add(borrarPeliculaButton);
-
-
-        panelPrincipal.add(panelTitulo, BorderLayout.NORTH);
-        panelPrincipal.add(panelScroll, BorderLayout.CENTER);
+        panelPrincipal.add(panelTitulo);
+        panelPrincipal.add(panelScroll,BorderLayout.CENTER);
         panelPrincipal.add(barraInferior, BorderLayout.SOUTH);
 
         setContentPane(panelPrincipal);
     }
 
-    public JButton getAñadirPeliculaButton() { return añadirPeliculaButton; }
-    public JButton getBorrarPeliculaButton() { return borrarPeliculaButton; }
-    public JButton getEditarButton() { return editarButton; }
+    public JButton getProcederAlPagoButton() {
+        return procederAlPagoButton;
+    }
 
-    public void mostrarPeliculas(ArrayList<Pelicula> peliculas) {
+    public void mostrarPeliculas(List<Pelicula> peliculas) {
         panelMain.removeAll();
 
         for (Pelicula pelicula : peliculas) {

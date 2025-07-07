@@ -1,6 +1,8 @@
 package Modelo;
 
-public class Pelicula {
+import java.io.Serializable;
+
+public class Pelicula implements Serializable {
     private String Nombre;
     private String Descripcion;
     private String Duracion;
