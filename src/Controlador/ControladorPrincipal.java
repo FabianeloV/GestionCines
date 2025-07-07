@@ -16,6 +16,7 @@ public class ControladorPrincipal implements ActionListener {
     private CarteleraNoEditControlador controladorCarteleraNoEdit;
     private ControladorVentanaCreacionUsuario ventanaNuevosUsuarios;
     private ControladorVentanaReportes ventanaReportes;
+    private ControladorVentanaAsientos ventanaAsientos;
 
     public ControladorPrincipal() {
 
@@ -30,6 +31,7 @@ public class ControladorPrincipal implements ActionListener {
         gestorPeliculas = new GestorPelicula();
         ventanaNuevosUsuarios = new ControladorVentanaCreacionUsuario();
         ventanaReportes = new ControladorVentanaReportes();
+        ventanaAsientos = new ControladorVentanaAsientos();
 
 
         gestorPeliculas.actualizarLista();
@@ -45,10 +47,16 @@ public class ControladorPrincipal implements ActionListener {
 
         controladorCarteleraNoEdit.getElegirPelicula().getVista().getBtnBack().addActionListener(this);
         controladorCarteleraNoEdit.getVistaCarteleraNoEditable().getBtnBack().addActionListener(this);
+        controladorCarteleraNoEdit.getElegirPelicula().getVentanaAsientos().getVentanaAsientos().getBtnBack().addActionListener(this);
+        controladorCarteleraNoEdit.getElegirPelicula().getVentanaAsientos().getConfirmacionPagos().getVentana().getBtnBack().addActionListener(this);
+
+
 
         controladorCartelera.getVistaCartelera().getBtnBack().addActionListener(this);
 
         ventanaNuevosUsuarios.getVentanaNuevosUsuarios().getBotonBack().addActionListener(this);
+
+
 
         ventanaReportes.getVentanaReportes().getBotonBack().addActionListener(this);
         ventanaInicio.setVisible(true);
@@ -103,6 +111,14 @@ public class ControladorPrincipal implements ActionListener {
 
         if (e.getSource() == ventanaReportes.getVentanaReportes().getBotonBack()){
             volveraDashboard(ventanaReportes.getVentanaReportes());
+        }
+
+        if (e.getSource() == controladorCarteleraNoEdit.getElegirPelicula().getVentanaAsientos().getVentanaAsientos().getBtnBack()){
+            volveraDashboard(controladorCarteleraNoEdit.getElegirPelicula().getVentanaAsientos().getVentanaAsientos());
+        }
+
+        if (e.getSource() == controladorCarteleraNoEdit.getElegirPelicula().getVentanaAsientos().getConfirmacionPagos().getVentana().getBtnBack()){
+            volveraDashboard(controladorCarteleraNoEdit.getElegirPelicula().getVentanaAsientos().getConfirmacionPagos().getVentana());
         }
 
     }

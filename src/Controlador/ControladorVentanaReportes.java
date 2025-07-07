@@ -18,6 +18,7 @@ public class ControladorVentanaReportes implements ActionListener {
         ventanaReportes = new VentanaReportes();
 
         ventanaReportes.getBtnGenerar().addActionListener(this);
+        ventanaReportes.getBotonBack().addActionListener(this);
 
     }
 
