@@ -6,13 +6,15 @@ import javax.swing.*;
 import java.awt.*;
 
 public class SeleccionPelicula extends JFrame {
-    private JTextArea infoPelicula, cantidadBoletos;
+    private JTextArea infoPelicula;
+    private JSpinner spinnerCantidad;
     private JButton btnContinuar, btnBack;
     private JComboBox<String> cbCiudad, cbTipoSala, cbFormato, cbIdiomas;
     private JTextField tfHora, tfFecha;
     private JLabel lblHora, lblFecha, lblFunciones, lblCiudad,
-            lblCantidad, lblMenos, lblMas;
+            lblCantidad;
     private PanelConFondo panelFondo;
+
 
     public SeleccionPelicula() {
         initComponents();
@@ -30,7 +32,18 @@ public class SeleccionPelicula extends JFrame {
 
         // 2) crear componentes
         infoPelicula = new JTextArea(5, 20);
-        cantidadBoletos = new JTextArea(1, 3);
+
+        lblCantidad = new JLabel("Cantidad de Boletos:");
+        lblCantidad.setBounds(500, 20, 150, 25);
+        lblCantidad.setForeground(Color.white);
+        panelFondo.add(lblCantidad);
+
+        spinnerCantidad = new JSpinner(new SpinnerNumberModel(1, 1, 10, 1)); // de 1 a 10 boletos
+        spinnerCantidad.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        spinnerCantidad.setBounds(500, 80, 50, 30);
+        panelFondo.add(spinnerCantidad);
+
+
         btnContinuar = new JButton("Continuar");
         cbCiudad = new JComboBox<>(new String[]{"Seleccionar", "Cuenca", "Azogues", "Gualaceo"});
         cbTipoSala = new JComboBox<>(new String[]{"Salas", "VIP", "4D"});
@@ -42,9 +55,6 @@ public class SeleccionPelicula extends JFrame {
         lblFecha    = new JLabel("Fecha:");
         lblFunciones= new JLabel("Funciones:");
         lblCiudad   = new JLabel("Ciudad:");
-        lblCantidad = new JLabel("Cantidad:");
-        lblMenos    = new JLabel(new ImageIcon(getClass().getResource("/Sources/signo-menos-de-una-linea-en-posicion-horizontal.png")));
-        lblMas      = new JLabel(new ImageIcon(getClass().getResource("/Sources/mas.png")));
 
         btnBack = crearBotonPanel("", "/Sources/contorno-fino-de-punta-de-flecha-a-la-izquierda.png",20,30);
         btnBack.setBounds(0, 0, 50, 50);
@@ -66,17 +76,6 @@ public class SeleccionPelicula extends JFrame {
         panelFondo.add(cbFormato);    cbFormato .setBounds(430, 190, 110, 25);
         panelFondo.add(cbIdiomas);    cbIdiomas .setBounds(310, 190, 110, 25);
 
-        lblCantidad      .setBounds(40, 290, 80, 25);
-        lblCantidad.setForeground(Color.white);
-
-        panelFondo.add(lblCantidad);
-        cantidadBoletos  .setBounds(120, 330, 40, 30);
-        panelFondo.add(cantidadBoletos);
-        lblMenos         .setBounds(60, 330, 25, 25);
-        panelFondo.add(lblMenos);
-        lblMas           .setBounds(190, 330, 25, 25);
-        panelFondo.add(lblMas);
-
         lblHora          .setBounds(460, 240, 50, 25);
         lblHora.setForeground(Color.white);
 
@@ -96,12 +95,11 @@ public class SeleccionPelicula extends JFrame {
         btnContinuar     .setBounds(510, 360, 120, 25);
         panelFondo.add(btnContinuar);
 
-        // 4) eliminar bordes y opacar sólo lo necesario
         panelFondo.setOpaque(true);
         for (Component c : panelFondo.getComponents()) {
             if (c instanceof JPanel) ((JPanel)c).setOpaque(false);
         }
-        // JScrollPanes:
+
         for (Component c : panelFondo.getComponents()) {
             if (c instanceof JScrollPane sp) {
                 sp.setBorder(null);
@@ -214,6 +212,10 @@ public class SeleccionPelicula extends JFrame {
 
     public JTextField getTfFecha() {
         return tfFecha;
+    }
+
+    public int getCantidadBoletos() {
+        return (int) spinnerCantidad.getValue();
     }
 
 }

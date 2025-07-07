@@ -10,11 +10,14 @@ import java.text.SimpleDateFormat;
 public class ControladorSeleccionPelicula implements ActionListener {
 
     private SeleccionPelicula vista;
+    private ControladorVentanaAsientos VentanaAsientos;
 
     public ControladorSeleccionPelicula() {
         vista = new SeleccionPelicula();
+        VentanaAsientos = new ControladorVentanaAsientos();
 
         vista.getBtnContinuar().addActionListener(this);
+        VentanaAsientos.getVentanaAsientos().getBtnBack().addActionListener(this);
         vista.getBtnBack().addActionListener(this);
 
         //validar al salir del campo fecha
@@ -57,6 +60,11 @@ public class ControladorSeleccionPelicula implements ActionListener {
             JOptionPane.showMessageDialog(vista, "Fecha y hora válidas.");
         }
 
+        if (e.getSource() == vista.getBtnContinuar()){
+            vista.setVisible(false);
+            VentanaAsientos.getVentanaAsientos().setVisible(true);
+        }
+
     }
 
     private boolean esFechaValida(String fechaTexto) {
@@ -87,5 +95,9 @@ public class ControladorSeleccionPelicula implements ActionListener {
 
     public SeleccionPelicula getVista() {
         return vista;
+    }
+
+    public ControladorVentanaAsientos getVentanaAsientos() {
+        return VentanaAsientos;
     }
 }

@@ -3,7 +3,6 @@ package Controlador;
 import Modelo.GestorPelicula;
 import Modelo.Pelicula;
 import Vista.CarteleraNoEditable;
-import Vista.SeleccionPelicula;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
