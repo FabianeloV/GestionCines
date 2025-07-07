@@ -1,9 +1,10 @@
 package Modelo;
 
 import javax.swing.*;
+import java.io.*;
 import java.util.ArrayList;
 
-public class GestorPelicula {
+public class GestorPelicula implements Serializable {
 
     ArrayList<Pelicula> peliculas;
 
@@ -15,28 +16,10 @@ public class GestorPelicula {
         return peliculas;
     }
 
-    public void cargarPeliculas() {
-        String nombre="Lilo y Stitch";
-        String descripcion="Lilo es una niña hawaiana solitaria que adopta a un perro que en realidad es un extraterrestre travieso que se esconde de unos cazadores intergalácticos.";
-        String duracion="1h:45min";
-        String genero="Infantil";
-        String rutaPoster="C:\\Users\\Pablo Jaiba\\IdeaProjects\\GestionCines\\src\\Peliculas\\liloSticth.png";
-
-        String nombre1="Django";
-        String descripcion1="Un antiguo esclavo une sus fuerzas con un cazador de recompensas alemán que lo libera y ayuda a cazar a los criminales más buscados del Sur, todo ello con la esperanza de encontrar a su esposa perdida hace mucho tiempo.";
-        String duracion1="2h 45m";
-        String genero1="Wéstern/Acción";
-        String rutaPoster1="C:\\Users\\Pablo Jaiba\\IdeaProjects\\GestionCines\\src\\Peliculas\\Django.jpg";
-
-        Pelicula p=new Pelicula(nombre,descripcion,duracion,genero,rutaPoster);
-        Pelicula p2=new Pelicula(nombre1,descripcion1,duracion1,genero1,rutaPoster1);
-        peliculas.add(p);
-        peliculas.add(p2);
-    }
-
-
 
     public void añadirPelicula() {
+
+        peliculas=leerPeliculasDesdeArchivo("peliculas.dat");
 
         String nombre = JOptionPane.showInputDialog(null, "Ingrese el nombre de la película:");
         String duracion = JOptionPane.showInputDialog(null, "Ingrese la duración de la película:");
@@ -65,16 +48,23 @@ public class GestorPelicula {
 
         peliculas.add(peliculaNueva);
         JOptionPane.showMessageDialog(null, "Película añadida correctamente.");
+        guardarEstadoActual("peliculas.dat");
     }
+
+
 
 
     public void eliminarPelicula(int indice) {
+        peliculas=leerPeliculasDesdeArchivo("peliculas.dat");
         if (indice >= 0 && indice < peliculas.size()) {
             peliculas.remove(indice);
         }
+        guardarEstadoActual("peliculas.dat");
     }
 
     public void editarPelicula(int indice) {
+        peliculas=leerPeliculasDesdeArchivo("peliculas.dat");
+
         if (indice < 0 || indice >= peliculas.size()) {
             JOptionPane.showMessageDialog(null, "Índice inválido");
             return;
@@ -100,15 +90,17 @@ public class GestorPelicula {
         peliculas.set(indice, peliculaEditada);
 
         JOptionPane.showMessageDialog(null, "Película actualizada correctamente.");
+        guardarEstadoActual("peliculas.dat");
     }
 
     public int buscarPelicula(String nombre) {
+        actualizarLista();
+
         for (int i = 0; i < peliculas.size(); i++) {
             if (peliculas.get(i).getNombre().equals(nombre)) {
                 return i;
             }
         }
-
         return -1;
     }
 
@@ -131,5 +123,60 @@ public class GestorPelicula {
         }
         return indice;
     }
+
+    public void guardarPeliculasDeEjemplo(String rutaArchivo) {
+
+        Pelicula p1 = new Pelicula(
+                "Lilo y Stitch",
+                "Lilo es una niña hawaiana solitaria que adopta a un perro que en realidad es un extraterrestre travieso que se esconde de unos cazadores intergalácticos.",
+                "1h:45min",
+                "Infantil",
+                "C:\\Users\\Pablo Jaiba\\IdeaProjects\\GestionCines\\src\\Peliculas\\liloSticth.png"
+        );
+
+        Pelicula p2 = new Pelicula(
+                "Django",
+                "Un antiguo esclavo une sus fuerzas con un cazador de recompensas alemán que lo libera y ayuda a cazar a los criminales más buscados del Sur, todo ello con la esperanza de encontrar a su esposa perdida hace mucho tiempo.",
+                "2h 45m",
+                "Wéstern/Acción",
+                "C:\\Users\\Pablo Jaiba\\IdeaProjects\\GestionCines\\src\\Peliculas\\Django.jpg"
+        );
+
+        peliculas.add(p1);
+        peliculas.add(p2);
+
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(rutaArchivo))) {
+            out.writeObject(peliculas);
+            out.flush();
+            out.close();
+            System.out.println("Películas de ejemplo guardadas correctamente.");
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, "Error al guardar el archivo.");
+        }
+    }
+
+    public ArrayList<Pelicula> leerPeliculasDesdeArchivo(String rutaArchivo) {
+        ArrayList<Pelicula> leidas = new ArrayList<>();
+
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(rutaArchivo))) {
+            leidas = (ArrayList<Pelicula>) in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return leidas;
+    }
+
+    public void guardarEstadoActual(String NombreArchivo) {
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(NombreArchivo))) {
+            out.writeObject(peliculas);
+        } catch (IOException e) {
+            System.err.println("Error al guardar el estado actual:");
+            e.printStackTrace();
+        }
+    }
+     public void actualizarLista(){
+        peliculas = leerPeliculasDesdeArchivo("peliculas.dat");
+     }
 
 }
