@@ -6,8 +6,12 @@
       <w>clientes</w>
       <w>compra</w>
       <w>controlador</w>
+      <w>inicio</w>
       <w>listado</w>
+      <w>operador</w>
       <w>peliculas</w>
+      <w>sesion</w>
+      <w>taquilla</w>
     </words>
   </dictionary>
 </component>

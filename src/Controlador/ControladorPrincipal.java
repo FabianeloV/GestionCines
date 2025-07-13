@@ -14,12 +14,13 @@ public class ControladorPrincipal implements ActionListener {
     private VentanaDashboard ventanaDashboard;
     private CarteleraControlador controladorCartelera;
     private CarteleraNoEditControlador controladorCarteleraNoEdit;
-    private ControladorVentanaCreacionUsuario ventanaNuevosUsuarios;
-    private ControladorVentanaReportes ventanaReportes;
+    private ControladorCrearUsuarios controladorCrearUsuarios;
+    private VentanaNuevosUsuarios ventanaNuevosUsuarios;
+    //private ControladorVentanaReportes ventanaReportes;
     private ControladorVentanaAsientos ventanaAsientos;
+    private ControladorInicioSesion controladorInicioSesion;
 
     public ControladorPrincipal() {
-
         iniciarComponentes();
     }
 
@@ -29,9 +30,11 @@ public class ControladorPrincipal implements ActionListener {
         controladorCartelera = new CarteleraControlador();
         controladorCarteleraNoEdit = new CarteleraNoEditControlador();
         gestorPeliculas = new GestorPelicula();
-        ventanaNuevosUsuarios = new ControladorVentanaCreacionUsuario();
-        ventanaReportes = new ControladorVentanaReportes();
+        //ventanaReportes = new ControladorVentanaReportes();
         ventanaAsientos = new ControladorVentanaAsientos();
+        controladorInicioSesion = new ControladorInicioSesion(ventanaInicio);
+        ventanaNuevosUsuarios = new VentanaNuevosUsuarios();
+        controladorCrearUsuarios = new ControladorCrearUsuarios(ventanaNuevosUsuarios);
 
 
         gestorPeliculas.actualizarLista();
@@ -43,6 +46,7 @@ public class ControladorPrincipal implements ActionListener {
         ventanaDashboard.getBotonLogout().addActionListener(this);
         ventanaDashboard.getBotonTickets().addActionListener(this);
         ventanaDashboard.getBotonReportes().addActionListener(this);
+        ventanaNuevosUsuarios.getBtnCrearUsuario().addActionListener(this);
 
 
         controladorCarteleraNoEdit.getElegirPelicula().getVista().getBtnBack().addActionListener(this);
@@ -54,19 +58,20 @@ public class ControladorPrincipal implements ActionListener {
 
         controladorCartelera.getVistaCartelera().getBtnBack().addActionListener(this);
 
-        ventanaNuevosUsuarios.getVentanaNuevosUsuarios().getBotonBack().addActionListener(this);
+        ventanaNuevosUsuarios.getBotonBack().addActionListener(this);
 
 
 
-        ventanaReportes.getVentanaReportes().getBotonBack().addActionListener(this);
+        //ventanaReportes.getVentanaReportes().getBotonBack().addActionListener(this);
         ventanaInicio.setVisible(true);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == ventanaInicio.getBotonAceptar()) {
-            ventanaInicio.setVisible(false);
-            ventanaDashboard.setVisible(true);
+            if (controladorInicioSesion.validarLogin()){
+                ventanaDashboard.setVisible(true);
+            }
         }
 
         if (e.getSource() == ventanaDashboard.getBotonCartelera()){
@@ -81,15 +86,18 @@ public class ControladorPrincipal implements ActionListener {
             controladorCarteleraNoEdit.getVistaCarteleraNoEditable().setVisible(true);
         }
 
+        if (e.getSource() == ventanaNuevosUsuarios.getBtnCrearUsuario()){
+            controladorCrearUsuarios.registrarUsuario();
+        }
 
         if(e.getSource() == ventanaDashboard.getBotonAgregarUsuario()){
             ventanaDashboard.setVisible(false);
-            ventanaNuevosUsuarios.getVentanaNuevosUsuarios().setVisible(true);
+            ventanaNuevosUsuarios.setVisible(true);
         }
 
         if(e.getSource() == ventanaDashboard.getBotonReportes()){
             ventanaDashboard.setVisible(false);
-            ventanaReportes.getVentanaReportes().setVisible(true);
+            //ventanaReportes.getVentanaReportes().setVisible(true);
         }
 
         //botones de back
@@ -105,13 +113,16 @@ public class ControladorPrincipal implements ActionListener {
             volveraDashboard(controladorCartelera.getVistaCartelera());
         }
 
-        if (e.getSource() == ventanaNuevosUsuarios.getVentanaNuevosUsuarios().getBotonBack()){
-            volveraDashboard(ventanaNuevosUsuarios.getVentanaNuevosUsuarios());
+        if (e.getSource() == ventanaNuevosUsuarios.getBotonBack()){
+            volveraDashboard(ventanaNuevosUsuarios);
         }
 
+        /*
         if (e.getSource() == ventanaReportes.getVentanaReportes().getBotonBack()){
             volveraDashboard(ventanaReportes.getVentanaReportes());
         }
+
+         */
 
         if (e.getSource() == controladorCarteleraNoEdit.getElegirPelicula().getVentanaAsientos().getVentanaAsientos().getBtnBack()){
             volveraDashboard(controladorCarteleraNoEdit.getElegirPelicula().getVentanaAsientos().getVentanaAsientos());
@@ -120,7 +131,6 @@ public class ControladorPrincipal implements ActionListener {
         if (e.getSource() == controladorCarteleraNoEdit.getElegirPelicula().getVentanaAsientos().getConfirmacionPagos().getVentana().getBtnBack()){
             volveraDashboard(controladorCarteleraNoEdit.getElegirPelicula().getVentanaAsientos().getConfirmacionPagos().getVentana());
         }
-
     }
 
     public void volveraDashboard(JFrame ventanaActual) {
