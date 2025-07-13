@@ -1,6 +1,8 @@
 package Controlador;
 
 import Modelo.GestorPelicula;
+import Modelo.Rol;
+import Modelo.Usuario;
 import Vista.*;
 
 import javax.swing.*;
@@ -8,6 +10,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class ControladorPrincipal implements ActionListener {
+
+    private Usuario usuarioActual = new Usuario("", "", Rol.Admin);
 
     private GestorPelicula gestorPeliculas;
     private InicioSesionVentana ventanaInicio;
@@ -55,11 +59,9 @@ public class ControladorPrincipal implements ActionListener {
         controladorCarteleraNoEdit.getElegirPelicula().getVentanaAsientos().getConfirmacionPagos().getVentana().getBtnBack().addActionListener(this);
 
 
-
         controladorCartelera.getVistaCartelera().getBtnBack().addActionListener(this);
 
         ventanaNuevosUsuarios.getBotonBack().addActionListener(this);
-
 
 
         //ventanaReportes.getVentanaReportes().getBotonBack().addActionListener(this);
@@ -69,39 +71,55 @@ public class ControladorPrincipal implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == ventanaInicio.getBotonAceptar()) {
-            if (controladorInicioSesion.validarLogin()){
+            if (controladorInicioSesion.validarLogin(usuarioActual)) {
                 ventanaDashboard.setVisible(true);
+                JOptionPane.showMessageDialog(null, "Iniciando Sesion como " + usuarioActual.getRol().toString());
             }
         }
 
-        if (e.getSource() == ventanaDashboard.getBotonCartelera()){
+        if (e.getSource() == ventanaDashboard.getBotonCartelera()) {
             ventanaDashboard.setVisible(false);
             controladorCartelera.getVistaCartelera().setVisible(true);
         }
 
         if (e.getSource() == ventanaDashboard.getBotonTickets()) {
-            gestorPeliculas.actualizarLista();
-            controladorCarteleraNoEdit.getVistaCarteleraNoEditable()
-                    .mostrarPeliculas(gestorPeliculas.getPeliculas());
-            controladorCarteleraNoEdit.getVistaCarteleraNoEditable().setVisible(true);
+            if (usuarioActual.getRol() == Rol.Admin || usuarioActual.getRol() == Rol.Taquilla) {
+                gestorPeliculas.actualizarLista();
+                controladorCarteleraNoEdit.getVistaCarteleraNoEditable()
+                        .mostrarPeliculas(gestorPeliculas.getPeliculas());
+                controladorCarteleraNoEdit.getVistaCarteleraNoEditable().setVisible(true);
+            } else {
+                JOptionPane.showMessageDialog(null, "Rol no autorizado, rol actual: " + usuarioActual.getRol().toString());
+            }
+
         }
 
-        if (e.getSource() == ventanaNuevosUsuarios.getBtnCrearUsuario()){
+        if (e.getSource() == ventanaNuevosUsuarios.getBtnCrearUsuario()) {
             controladorCrearUsuarios.registrarUsuario();
         }
 
-        if(e.getSource() == ventanaDashboard.getBotonAgregarUsuario()){
-            ventanaDashboard.setVisible(false);
-            ventanaNuevosUsuarios.setVisible(true);
+        if (e.getSource() == ventanaDashboard.getBotonAgregarUsuario()) {
+            if (usuarioActual.getRol() == Rol.Admin) {
+                ventanaDashboard.setVisible(false);
+                ventanaNuevosUsuarios.setVisible(true);
+            } else {
+                JOptionPane.showMessageDialog(null, "Rol no autorizado, rol actual: " + usuarioActual.getRol().toString());
+            }
+
         }
 
-        if(e.getSource() == ventanaDashboard.getBotonReportes()){
-            ventanaDashboard.setVisible(false);
-            //ventanaReportes.getVentanaReportes().setVisible(true);
+        if (e.getSource() == ventanaDashboard.getBotonReportes()) {
+            if (usuarioActual.getRol() == Rol.Admin || usuarioActual.getRol() == Rol.Operador) {
+                ventanaDashboard.setVisible(false);
+                //ventanaReportes.getVentanaReportes().setVisible(true);
+            } else {
+                JOptionPane.showMessageDialog(null, "Rol no autorizado, rol actual: " + usuarioActual.getRol().toString());
+            }
+
         }
 
         //botones de back
-        if (e.getSource() == controladorCarteleraNoEdit.getElegirPelicula().getVista().getBtnBack()){
+        if (e.getSource() == controladorCarteleraNoEdit.getElegirPelicula().getVista().getBtnBack()) {
             volveraDashboard(controladorCarteleraNoEdit.getElegirPelicula().getVista());
         }
 
@@ -113,7 +131,7 @@ public class ControladorPrincipal implements ActionListener {
             volveraDashboard(controladorCartelera.getVistaCartelera());
         }
 
-        if (e.getSource() == ventanaNuevosUsuarios.getBotonBack()){
+        if (e.getSource() == ventanaNuevosUsuarios.getBotonBack()) {
             volveraDashboard(ventanaNuevosUsuarios);
         }
 
@@ -124,12 +142,47 @@ public class ControladorPrincipal implements ActionListener {
 
          */
 
-        if (e.getSource() == controladorCarteleraNoEdit.getElegirPelicula().getVentanaAsientos().getVentanaAsientos().getBtnBack()){
+        if (e.getSource() == controladorCarteleraNoEdit.getElegirPelicula().getVentanaAsientos().getVentanaAsientos().getBtnBack()) {
             volveraDashboard(controladorCarteleraNoEdit.getElegirPelicula().getVentanaAsientos().getVentanaAsientos());
         }
 
-        if (e.getSource() == controladorCarteleraNoEdit.getElegirPelicula().getVentanaAsientos().getConfirmacionPagos().getVentana().getBtnBack()){
+        if (e.getSource() == controladorCarteleraNoEdit.getElegirPelicula().getVentanaAsientos().getConfirmacionPagos().getVentana().getBtnBack()) {
             volveraDashboard(controladorCarteleraNoEdit.getElegirPelicula().getVentanaAsientos().getConfirmacionPagos().getVentana());
+        }
+
+
+        // LogOut
+        if (e.getSource() == ventanaDashboard.getBotonLogout()) {
+            String[] opciones = {"OK","Cerrar sesión"};
+
+            int seleccion = JOptionPane.showOptionDialog(
+                    null,
+                    "Nombre de usuario: " + usuarioActual.getNombre() + "\n" + "Rol actual: " + usuarioActual.getRol().toString(),
+                    "Usuario",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    opciones,
+                    opciones[0]
+            );
+
+            switch (seleccion) {
+                case 0:
+                    break;
+                case 1: // Botón "Ejecutar Función"
+                    System.out.println("Cerrando sesion...");
+                    ventanaDashboard.setVisible(false);
+                    ventanaInicio.setVisible(true);
+                    usuarioActual.setRol(Rol.Admin);
+                    usuarioActual.setNombre("");
+                    usuarioActual.setContrasena("");
+                    break;
+
+                case JOptionPane.CLOSED_OPTION: // Usuario cerró la ventana
+                    break;
+                default:
+                    System.out.println("Opción no reconocida");
+            }
         }
     }
 

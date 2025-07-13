@@ -5,6 +5,8 @@ import java.io.*;
 import java.util.LinkedList;
 
 public class InicioSesion {
+    public Rol rol = null;
+
     // Función para cargar datos del archivo
     public LinkedList<Usuario> cargarDatos(String nombreArchivo) {
         LinkedList<Usuario> listaUsuarios = new LinkedList<>();
@@ -25,7 +27,7 @@ public class InicioSesion {
     }
 
     // Función para validar credenciales
-    public ResultadoValidacion validarCredenciales(String nombreArchivo, String usuarioIngresado, String claveIngresada) {
+    public ResultadoValidacion validarCredenciales(String nombreArchivo, String usuarioIngresado, String claveIngresada, Usuario usuarioActual) {
         try {
             // Validar que los campos no estén vacíos
             if (usuarioIngresado == null || usuarioIngresado.trim().isEmpty() ||
@@ -40,6 +42,9 @@ public class InicioSesion {
             for (Usuario usuario : listaUsuarios) {
                 if (usuario.getUsuario().equals(usuarioIngresado.trim())) {
                     if (usuario.getClave().equals(claveIngresada)) {
+                        usuarioActual.setRol(usuario.getRol());
+                        usuarioActual.setNombre(usuario.getNombre());
+                        usuarioActual.setContrasena(usuario.getContrasena());
                         return new ResultadoValidacion(true, "Inicio de sesión exitoso");
                     } else {
                         return new ResultadoValidacion(false, "Contraseña incorrecta");
@@ -53,6 +58,10 @@ public class InicioSesion {
         } catch (Exception ex) {
             return new ResultadoValidacion(false, "Error durante la validación: " + ex.getMessage());
         }
+    }
+
+    public Rol getRol() {
+        return rol;
     }
 
     // Clase para encapsular el resultado de la validación
