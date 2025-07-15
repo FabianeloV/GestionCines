@@ -1,6 +1,9 @@
 package Vista;
 
 import Modelo.Pelicula;
+import com.toedter.calendar.JDateChooser;
+
+import java.text.SimpleDateFormat;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,6 +14,7 @@ public class SeleccionPelicula extends JFrame {
     private JButton btnContinuar, btnBack;
     private JComboBox<String> cbCiudad, cbTipoSala, cbFormato, cbIdiomas;
     private JTextField tfHora, tfFecha;
+    private JDateChooser fecha;
     private JLabel lblHora, lblFecha, lblFunciones, lblCiudad,
             lblCantidad, lblTipoSala, lblFormato, lblIdiomas;
     private PanelConFondo panelFondo;
@@ -113,8 +117,9 @@ public class SeleccionPelicula extends JFrame {
         lblFecha.setForeground(Color.white);
         panelFondo.add(lblFecha);
 
-        tfFecha.setBounds(310, 220, 120, 25);
-        panelFondo.add(tfFecha);
+        fecha = new JDateChooser();
+        fecha.setBounds(310, 220, 120, 25);
+        panelFondo.add(fecha);
 
         infoPelicula.setBounds(40, 110, 230, 160);
         panelFondo.add(new JScrollPane(infoPelicula));

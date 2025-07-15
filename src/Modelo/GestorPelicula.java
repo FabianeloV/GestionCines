@@ -63,35 +63,81 @@ public class GestorPelicula implements Serializable {
     }
 
     public void editarPelicula(int indice) {
-        peliculas=leerPeliculasDesdeArchivo("peliculas.dat");
+        peliculas = leerPeliculasDesdeArchivo("peliculas.dat");
 
         if (indice < 0 || indice >= peliculas.size()) {
             JOptionPane.showMessageDialog(null, "Índice inválido");
             return;
         }
 
-        String nombre = JOptionPane.showInputDialog(null, "Ingrese el nombre de la película:");
-        String duracion = JOptionPane.showInputDialog(null, "Ingrese la duración de la película:");
-        String descripcion = JOptionPane.showInputDialog(null, "Ingrese la descripción de la película:");
-        String genero = JOptionPane.showInputDialog(null, "Ingrese el género de la película:");
+        Pelicula original = peliculas.get(indice);
 
-        JFileChooser selector = new JFileChooser();
-        selector.setDialogTitle("Selecciona el nuevo póster");
-        selector.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Imágenes", "jpg", "jpeg", "png", "gif"));
+        String[] opciones = {"Nombre", "Duración", "Descripción", "Género", "Póster"};
+        String seleccion = (String) JOptionPane.showInputDialog(
+                null,
+                "¿Qué deseas editar?",
+                "Editar Película",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                opciones,
+                opciones[0]
+        );
 
-        String rutaPoster = peliculas.get(indice).getRutaPoster();
+        if (seleccion == null) return; // Cancelado
 
-        int resultado = selector.showOpenDialog(null);
-        if (resultado == JFileChooser.APPROVE_OPTION) {
-            rutaPoster = selector.getSelectedFile().getAbsolutePath();
+        String nuevoNombre = original.getNombre();
+        String nuevaDuracion = original.getDuracion();
+        String nuevaDescripcion = original.getDescripcion();
+        String nuevoGenero = original.getGenero();
+        String nuevaRutaPoster = original.getRutaPoster();
+
+        switch (seleccion) {
+            case "Nombre":
+                String nombre = JOptionPane.showInputDialog(null, "Nuevo nombre:", original.getNombre());
+                if (nombre != null && !nombre.trim().isEmpty()) {
+                    nuevoNombre = nombre.trim();
+                }
+                break;
+
+            case "Duración":
+                String duracion = JOptionPane.showInputDialog(null, "Nueva duración:", original.getDuracion());
+                if (duracion != null && !duracion.trim().isEmpty()) {
+                    nuevaDuracion = duracion.trim();
+                }
+                break;
+
+            case "Descripción":
+                String descripcion = JOptionPane.showInputDialog(null, "Nueva descripción:", original.getDescripcion());
+                if (descripcion != null && !descripcion.trim().isEmpty()) {
+                    nuevaDescripcion = descripcion.trim();
+                }
+                break;
+
+            case "Género":
+                String genero = JOptionPane.showInputDialog(null, "Nuevo género:", original.getGenero());
+                if (genero != null && !genero.trim().isEmpty()) {
+                    nuevoGenero = genero.trim();
+                }
+                break;
+
+            case "Póster":
+                JFileChooser selector = new JFileChooser();
+                selector.setDialogTitle("Selecciona el nuevo póster");
+                selector.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Imágenes", "jpg", "jpeg", "png", "gif"));
+                int resultado = selector.showOpenDialog(null);
+                if (resultado == JFileChooser.APPROVE_OPTION) {
+                    nuevaRutaPoster = selector.getSelectedFile().getAbsolutePath();
+                }
+                break;
         }
 
-        Pelicula peliculaEditada = new Pelicula(nombre, descripcion, duracion, genero, rutaPoster);
-        peliculas.set(indice, peliculaEditada);
+        Pelicula editada = new Pelicula(nuevoNombre, nuevaDescripcion, nuevaDuracion, nuevoGenero, nuevaRutaPoster);
+        peliculas.set(indice, editada);
 
         JOptionPane.showMessageDialog(null, "Película actualizada correctamente.");
         guardarEstadoActual("peliculas.dat");
     }
+
 
     public int buscarPelicula(String nombre) {
         actualizarLista();

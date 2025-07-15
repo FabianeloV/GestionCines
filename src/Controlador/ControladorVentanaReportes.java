@@ -5,6 +5,13 @@ import Modelo.ExportadorPDF;
 import Modelo.GestorPelicula;
 import Modelo.Pelicula;
 import Vista.VentanaReportes;
+import java.text.SimpleDateFormat;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.ParseException;
+import java.util.Date;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -30,6 +37,25 @@ public class ControladorVentanaReportes implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == ventanaReportes.getBtnGenerar()) {
+
+            SimpleDateFormat formatoFecha = new SimpleDateFormat("yyyy-MM-dd");
+
+            Date fechaInicio = ventanaReportes.getFechaInicio().getDate();
+            Date fechaFin = ventanaReportes.getFechaFin().getDate();
+
+            String inicio = (fechaInicio != null) ? formatoFecha.format(fechaInicio) : "";
+            String fin = (fechaFin != null) ? formatoFecha.format(fechaFin) : "";
+
+            String formato = ventanaReportes.getComboFormatoReporte().getSelectedItem().toString();
+
+            if (inicio.isEmpty() || fin.isEmpty()) {
+                mostrarError("Ambas fechas son obligatorias.");
+                return;
+            }
+
+            if (fechaInicio.after(fechaFin)) {
+                mostrarError("La fecha de inicio debe ser anterior a la fecha fin.");
+                return;
             String tipoReporte = ventanaReportes.getComboTipoReporte().getSelectedItem().toString();
             String formato = ventanaReportes.getComboFormatoReporte().getSelectedItem().toString();
 
@@ -45,10 +71,23 @@ public class ControladorVentanaReportes implements ActionListener {
         gestorPelicula.actualizarLista();
         ArrayList<Pelicula> peliculas = gestorPelicula.getPeliculas();
 
+            if (formato.equalsIgnoreCase("Excel")) {
+                //excel.exportar();
+            }
+
+            if (formato.equalsIgnoreCase("PDF")) {
+                //PDF.exportar();
+            }
         if (peliculas.isEmpty()) {
             JOptionPane.showMessageDialog(null, "No hay películas registradas para generar el reporte.");
             return;
         }
+
+
+
+    private void mostrarError(String mensaje) {
+        JOptionPane.showMessageDialog(ventanaReportes, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
+    }
 
         String[] encabezados = {"Nombre", "Descripción", "Duración", "Género"};
 
