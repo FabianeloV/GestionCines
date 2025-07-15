@@ -23,6 +23,7 @@ public class ControladorPrincipal implements ActionListener {
     //private ControladorVentanaReportes ventanaReportes;
     private ControladorVentanaAsientos ventanaAsientos;
     private ControladorInicioSesion controladorInicioSesion;
+    private ControladorOperarioSala controladorSalas;
 
     public ControladorPrincipal() {
         iniciarComponentes();
@@ -39,7 +40,7 @@ public class ControladorPrincipal implements ActionListener {
         controladorInicioSesion = new ControladorInicioSesion(ventanaInicio);
         ventanaNuevosUsuarios = new VentanaNuevosUsuarios();
         controladorCrearUsuarios = new ControladorCrearUsuarios(ventanaNuevosUsuarios);
-
+        controladorSalas = new ControladorOperarioSala();
 
         gestorPeliculas.actualizarLista();
 
@@ -55,14 +56,31 @@ public class ControladorPrincipal implements ActionListener {
 
         controladorCarteleraNoEdit.getElegirPelicula().getVista().getBtnBack().addActionListener(this);
         controladorCarteleraNoEdit.getVistaCarteleraNoEditable().getBtnBack().addActionListener(this);
-        controladorCarteleraNoEdit.getElegirPelicula().getVentanaAsientos().getVentanaAsientos().getBtnBack().addActionListener(this);
-        controladorCarteleraNoEdit.getElegirPelicula().getVentanaAsientos().getConfirmacionPagos().getVentana().getBtnBack().addActionListener(this);
 
+        if (controladorCarteleraNoEdit.getElegirPelicula() != null) {
+            controladorCarteleraNoEdit.getElegirPelicula().setControladorPrincipal(this);
+            controladorCarteleraNoEdit.getElegirPelicula().setControladorAsientos(ventanaAsientos);
+        }
+
+
+        if (ventanaAsientos != null) {
+            ventanaAsientos.setControladorPrincipal(this);
+        }
 
         controladorCartelera.getVistaCartelera().getBtnBack().addActionListener(this);
 
         ventanaNuevosUsuarios.getBotonBack().addActionListener(this);
 
+        controladorSalas.getVista().getBtnBack().addActionListener(this);
+
+        if (ventanaAsientos != null && ventanaAsientos.getVentanaAsientos() != null) {
+            ventanaAsientos.getVentanaAsientos().getBtnBack().addActionListener(this);
+        }
+
+        if (ventanaAsientos != null && ventanaAsientos.getConfirmacionPagos() != null
+                && ventanaAsientos.getConfirmacionPagos().getVentana() != null) {
+            ventanaAsientos.getConfirmacionPagos().getVentana().getBtnBack().addActionListener(this);
+        }
 
         //ventanaReportes.getVentanaReportes().getBotonBack().addActionListener(this);
         ventanaInicio.setVisible(true);
@@ -91,7 +109,6 @@ public class ControladorPrincipal implements ActionListener {
             } else {
                 JOptionPane.showMessageDialog(null, "Rol no autorizado, rol actual: " + usuarioActual.getRol().toString());
             }
-
         }
 
         if (e.getSource() == ventanaNuevosUsuarios.getBtnCrearUsuario()) {
@@ -110,12 +127,19 @@ public class ControladorPrincipal implements ActionListener {
 
         if (e.getSource() == ventanaDashboard.getBotonReportes()) {
             if (usuarioActual.getRol() == Rol.Admin || usuarioActual.getRol() == Rol.Operador) {
-                ventanaDashboard.setVisible(false);
-                //ventanaReportes.getVentanaReportes().setVisible(true);
+                //ventanaDashboard.setVisible(false);
+                //ventanaReportes.g    private ControladorOperarioSala controladorSalas;etVentanaReportes().setVisible(true);
             } else {
                 JOptionPane.showMessageDialog(null, "Rol no autorizado, rol actual: " + usuarioActual.getRol().toString());
             }
 
+        }
+
+        if (e.getSource() == ventanaDashboard.getBotonControlSalas()) {
+            if (usuarioActual.getRol() == Rol.Operador || usuarioActual.getRol() == Rol.Admin) {
+                ventanaDashboard.setVisible(false);
+                controladorSalas.getVista().setVisible(true);
+            }
         }
 
         //botones de back
@@ -142,12 +166,27 @@ public class ControladorPrincipal implements ActionListener {
 
          */
 
+        if (e.getSource() == controladorSalas.getVista().getBtnBack()) {
+            volveraDashboard(controladorSalas.getVista());
+        }
+
         if (e.getSource() == controladorCarteleraNoEdit.getElegirPelicula().getVentanaAsientos().getVentanaAsientos().getBtnBack()) {
             volveraDashboard(controladorCarteleraNoEdit.getElegirPelicula().getVentanaAsientos().getVentanaAsientos());
         }
 
         if (e.getSource() == controladorCarteleraNoEdit.getElegirPelicula().getVentanaAsientos().getConfirmacionPagos().getVentana().getBtnBack()) {
             volveraDashboard(controladorCarteleraNoEdit.getElegirPelicula().getVentanaAsientos().getConfirmacionPagos().getVentana());
+        }
+
+        if (ventanaAsientos != null && ventanaAsientos.getVentanaAsientos() != null
+                && e.getSource() == ventanaAsientos.getVentanaAsientos().getBtnBack()) {
+            volveraDashboard(ventanaAsientos.getVentanaAsientos());
+        }
+
+        if (ventanaAsientos != null && ventanaAsientos.getConfirmacionPagos() != null
+                && ventanaAsientos.getConfirmacionPagos().getVentana() != null
+                && e.getSource() == ventanaAsientos.getConfirmacionPagos().getVentana().getBtnBack()) {
+            volveraDashboard(ventanaAsientos.getConfirmacionPagos().getVentana());
         }
 
 
