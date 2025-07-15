@@ -5,25 +5,21 @@ import Modelo.ExportadorPDF;
 import Modelo.GestorPelicula;
 import Modelo.Pelicula;
 import Vista.VentanaReportes;
-import java.text.SimpleDateFormat;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.ParseException;
-import java.util.Date;
-import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class ControladorVentanaReportes implements ActionListener {
 
-    VentanaReportes ventanaReportes;
-    GestorPelicula gestorPelicula;
-    ExportadorPDF exportadorPDF;
-    ExportadorExcel exportadorExcel;
+    private VentanaReportes ventanaReportes;
+    private GestorPelicula gestorPelicula;
+    private ExportadorPDF exportadorPDF;
+    private ExportadorExcel exportadorExcel;
 
     public ControladorVentanaReportes(VentanaReportes ventanaReportes) {
         this.ventanaReportes = ventanaReportes;
@@ -37,7 +33,6 @@ public class ControladorVentanaReportes implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == ventanaReportes.getBtnGenerar()) {
-
             SimpleDateFormat formatoFecha = new SimpleDateFormat("yyyy-MM-dd");
 
             Date fechaInicio = ventanaReportes.getFechaInicio().getDate();
@@ -45,8 +40,6 @@ public class ControladorVentanaReportes implements ActionListener {
 
             String inicio = (fechaInicio != null) ? formatoFecha.format(fechaInicio) : "";
             String fin = (fechaFin != null) ? formatoFecha.format(fechaFin) : "";
-
-            String formato = ventanaReportes.getComboFormatoReporte().getSelectedItem().toString();
 
             if (inicio.isEmpty() || fin.isEmpty()) {
                 mostrarError("Ambas fechas son obligatorias.");
@@ -56,6 +49,8 @@ public class ControladorVentanaReportes implements ActionListener {
             if (fechaInicio.after(fechaFin)) {
                 mostrarError("La fecha de inicio debe ser anterior a la fecha fin.");
                 return;
+            }
+
             String tipoReporte = ventanaReportes.getComboTipoReporte().getSelectedItem().toString();
             String formato = ventanaReportes.getComboFormatoReporte().getSelectedItem().toString();
 
@@ -71,23 +66,10 @@ public class ControladorVentanaReportes implements ActionListener {
         gestorPelicula.actualizarLista();
         ArrayList<Pelicula> peliculas = gestorPelicula.getPeliculas();
 
-            if (formato.equalsIgnoreCase("Excel")) {
-                //excel.exportar();
-            }
-
-            if (formato.equalsIgnoreCase("PDF")) {
-                //PDF.exportar();
-            }
         if (peliculas.isEmpty()) {
             JOptionPane.showMessageDialog(null, "No hay películas registradas para generar el reporte.");
             return;
         }
-
-
-
-    private void mostrarError(String mensaje) {
-        JOptionPane.showMessageDialog(ventanaReportes, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
-    }
 
         String[] encabezados = {"Nombre", "Descripción", "Duración", "Género"};
 
@@ -102,10 +84,10 @@ public class ControladorVentanaReportes implements ActionListener {
         }
 
         try {
-            if (formato.equals("PDF")) {
+            if (formato.equalsIgnoreCase("PDF")) {
                 exportadorPDF.exportar("Reporte Cartelera", encabezados, datosReporte);
                 JOptionPane.showMessageDialog(null, "Reporte PDF generado correctamente.");
-            } else if (formato.equals("Excel")) {
+            } else if (formato.equalsIgnoreCase("Excel")) {
                 exportadorExcel.exportar("Reporte Cartelera", encabezados, datosReporte);
                 JOptionPane.showMessageDialog(null, "Reporte Excel generado correctamente.");
             } else {
@@ -115,5 +97,9 @@ public class ControladorVentanaReportes implements ActionListener {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(null, "Error al generar el reporte: " + ex.getMessage());
         }
+    }
+
+    private void mostrarError(String mensaje) {
+        JOptionPane.showMessageDialog(ventanaReportes, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
     }
 }
