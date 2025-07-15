@@ -35,7 +35,8 @@ public class ControladorPrincipal implements ActionListener {
         controladorCartelera = new CarteleraControlador();
         controladorCarteleraNoEdit = new CarteleraNoEditControlador();
         gestorPeliculas = new GestorPelicula();
-        ventanaReportes = new ControladorVentanaReportes();
+        VentanaReportes vistaReportes = new VentanaReportes();
+        ventanaReportes = new ControladorVentanaReportes(vistaReportes);
         ventanaAsientos = new ControladorVentanaAsientos();
         controladorInicioSesion = new ControladorInicioSesion(ventanaInicio);
         ventanaNuevosUsuarios = new VentanaNuevosUsuarios();

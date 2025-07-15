@@ -14,12 +14,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+
 public class ControladorVentanaReportes implements ActionListener {
 
-    private VentanaReportes ventanaReportes;
+    public VentanaReportes ventanaReportes;
     private GestorPelicula gestorPelicula;
     private ExportadorPDF exportadorPDF;
     private ExportadorExcel exportadorExcel;
+
+    public VentanaReportes getVentanaReportes() {
+        return ventanaReportes;
+    }
 
     public ControladorVentanaReportes(VentanaReportes ventanaReportes) {
         this.ventanaReportes = ventanaReportes;

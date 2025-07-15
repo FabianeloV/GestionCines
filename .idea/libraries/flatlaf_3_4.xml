@@ -13,9 +13,11 @@
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/Downloads/jcalendar-1.4.zip!/doc/api" />
+      <root url="file://$USER_HOME$/Downloads/jcalendar-1.4/doc/api" />
     </JAVADOC>
     <SOURCES>
       <root url="jar://$USER_HOME$/Downloads/jcalendar-1.4.zip!/src" />
+      <root url="file://$USER_HOME$/Downloads/jcalendar-1.4/src" />
     </SOURCES>
   </library>
 </component>
