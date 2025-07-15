@@ -1,5 +1,7 @@
 package Vista;
 
+import Modelo.Rol;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -91,10 +93,40 @@ public class VentanaNuevosUsuarios extends JFrame {
 
     // Getters para el controlador
     public JButton getBtnCrearUsuario() { return btnCrearUsuario; }
-    public JTextField getCampoUsuario() { return campoUsuario; }
-    public JPasswordField getCampoContraseña() { return campoContraseña; }
-    public JComboBox<String> getComboTipoUsuario() { return comboTipoUsuario; }
     public JButton getBotonBack() { return BotonBack; }
+
+    public String getUsuarioIngresado() {
+        return campoUsuario.getText().trim();
+    }
+
+    public String getClaveIngresada() {
+        return campoContraseña.getText().trim();
+    }
+
+    public Rol getRol() {
+        String rol = comboTipoUsuario.getSelectedItem().toString();
+
+        switch (rol) {
+            case "Operador":
+                return Rol.Operador;
+                case "Taquillero":
+                    return Rol.Taquilla;
+            default:
+                return Rol.Admin;
+        }
+    }
+
+    // Método para mostrar mensajes desde el controlador
+    public void mostrarMensaje(String mensaje, String titulo, int tipoMensaje) {
+        JOptionPane.showMessageDialog(this, mensaje, titulo, tipoMensaje);
+    }
+
+    // Métodos para limpiar los campos
+    public void limpiarCampos() {
+        campoUsuario.setText("");
+        campoContraseña.setText("");
+    }
+
 
     public static void main(String[] args) {
         javax.swing.SwingUtilities.invokeLater(() -> {

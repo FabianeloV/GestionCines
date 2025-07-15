@@ -1,6 +1,8 @@
 package Controlador;
 
 import Modelo.GestorPelicula;
+import Modelo.Rol;
+import Modelo.Usuario;
 import Vista.*;
 
 import javax.swing.*;
@@ -9,14 +11,18 @@ import java.awt.event.ActionListener;
 
 public class ControladorPrincipal implements ActionListener {
 
+    private Usuario usuarioActual = new Usuario("", "", Rol.Admin);
+
     private GestorPelicula gestorPeliculas;
     private InicioSesionVentana ventanaInicio;
     private VentanaDashboard ventanaDashboard;
     private CarteleraControlador controladorCartelera;
     private CarteleraNoEditControlador controladorCarteleraNoEdit;
-    private ControladorVentanaCreacionUsuario ventanaNuevosUsuarios;
-    private ControladorVentanaReportes ventanaReportes;
+    private ControladorCrearUsuarios controladorCrearUsuarios;
+    private VentanaNuevosUsuarios ventanaNuevosUsuarios;
+    //private ControladorVentanaReportes ventanaReportes;
     private ControladorVentanaAsientos ventanaAsientos;
+    private ControladorInicioSesion controladorInicioSesion;
     private ControladorOperarioSala controladorSalas;
 
     public ControladorPrincipal() {
@@ -24,27 +30,20 @@ public class ControladorPrincipal implements ActionListener {
     }
 
     private void iniciarComponentes() {
-        
         ventanaInicio = new InicioSesionVentana();
         ventanaDashboard = new VentanaDashboard();
         controladorCartelera = new CarteleraControlador();
         controladorCarteleraNoEdit = new CarteleraNoEditControlador();
         gestorPeliculas = new GestorPelicula();
-        ventanaNuevosUsuarios = new ControladorVentanaCreacionUsuario();
-        ventanaReportes = new ControladorVentanaReportes();
+        //ventanaReportes = new ControladorVentanaReportes();
         ventanaAsientos = new ControladorVentanaAsientos();
+        controladorInicioSesion = new ControladorInicioSesion(ventanaInicio);
+        ventanaNuevosUsuarios = new VentanaNuevosUsuarios();
+        controladorCrearUsuarios = new ControladorCrearUsuarios(ventanaNuevosUsuarios);
         controladorSalas = new ControladorOperarioSala();
 
         gestorPeliculas.actualizarLista();
 
-        
-        configurarEventos();
-
-        ventanaInicio.setVisible(true);
-    }
-
-    private void configurarEventos() {
-        
         ventanaInicio.getBotonAceptar().addActionListener(this);
         ventanaDashboard.getBotonAgregarUsuario().addActionListener(this);
         ventanaDashboard.getBotonCartelera().addActionListener(this);
@@ -52,18 +51,26 @@ public class ControladorPrincipal implements ActionListener {
         ventanaDashboard.getBotonLogout().addActionListener(this);
         ventanaDashboard.getBotonTickets().addActionListener(this);
         ventanaDashboard.getBotonReportes().addActionListener(this);
+        ventanaNuevosUsuarios.getBtnCrearUsuario().addActionListener(this);
 
-        configurarEventosBack();
 
-        configurarEventosVentanasSecundarias();
-    }
-
-    private void configurarEventosBack() {
         controladorCarteleraNoEdit.getElegirPelicula().getVista().getBtnBack().addActionListener(this);
         controladorCarteleraNoEdit.getVistaCarteleraNoEditable().getBtnBack().addActionListener(this);
+
+        if (controladorCarteleraNoEdit.getElegirPelicula() != null) {
+            controladorCarteleraNoEdit.getElegirPelicula().setControladorPrincipal(this);
+            controladorCarteleraNoEdit.getElegirPelicula().setControladorAsientos(ventanaAsientos);
+        }
+
+
+        if (ventanaAsientos != null) {
+            ventanaAsientos.setControladorPrincipal(this);
+        }
+
         controladorCartelera.getVistaCartelera().getBtnBack().addActionListener(this);
-        ventanaNuevosUsuarios.getVentanaNuevosUsuarios().getBotonBack().addActionListener(this);
-        ventanaReportes.getVentanaReportes().getBotonBack().addActionListener(this);
+
+        ventanaNuevosUsuarios.getBotonBack().addActionListener(this);
+
         controladorSalas.getVista().getBtnBack().addActionListener(this);
 
         if (ventanaAsientos != null && ventanaAsientos.getVentanaAsientos() != null) {
@@ -74,61 +81,68 @@ public class ControladorPrincipal implements ActionListener {
                 && ventanaAsientos.getConfirmacionPagos().getVentana() != null) {
             ventanaAsientos.getConfirmacionPagos().getVentana().getBtnBack().addActionListener(this);
         }
-    }
 
-    private void configurarEventosVentanasSecundarias() {
-        
-        if (controladorCarteleraNoEdit.getElegirPelicula() != null) {
-            controladorCarteleraNoEdit.getElegirPelicula().setControladorPrincipal(this);
-            controladorCarteleraNoEdit.getElegirPelicula().setControladorAsientos(ventanaAsientos);
-        }
-
-        
-        if (ventanaAsientos != null) {
-            ventanaAsientos.setControladorPrincipal(this);
-        }
+        //ventanaReportes.getVentanaReportes().getBotonBack().addActionListener(this);
+        ventanaInicio.setVisible(true);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        // Navegación principal
-        NavegacionPrincipal(e);
-
-        // Botones de regreso
-        NavegacionBotonesBack(e);
-    }
-
-    private void NavegacionPrincipal(ActionEvent e) {
         if (e.getSource() == ventanaInicio.getBotonAceptar()) {
-            navegarA(ventanaInicio, ventanaDashboard);
+            if (controladorInicioSesion.validarLogin(usuarioActual)) {
+                ventanaDashboard.setVisible(true);
+                JOptionPane.showMessageDialog(null, "Iniciando Sesion como " + usuarioActual.getRol().toString());
+            }
         }
 
         if (e.getSource() == ventanaDashboard.getBotonCartelera()) {
-            navegarA(ventanaDashboard, controladorCartelera.getVistaCartelera());
+            ventanaDashboard.setVisible(false);
+            controladorCartelera.getVistaCartelera().setVisible(true);
         }
 
         if (e.getSource() == ventanaDashboard.getBotonTickets()) {
-            gestorPeliculas.actualizarLista();
-            controladorCarteleraNoEdit.getVistaCarteleraNoEditable()
-                    .mostrarPeliculas(gestorPeliculas.getPeliculas());
-            navegarA(ventanaDashboard, controladorCarteleraNoEdit.getVistaCarteleraNoEditable());
+            if (usuarioActual.getRol() == Rol.Admin || usuarioActual.getRol() == Rol.Taquilla) {
+                gestorPeliculas.actualizarLista();
+                controladorCarteleraNoEdit.getVistaCarteleraNoEditable()
+                        .mostrarPeliculas(gestorPeliculas.getPeliculas());
+                controladorCarteleraNoEdit.getVistaCarteleraNoEditable().setVisible(true);
+            } else {
+                JOptionPane.showMessageDialog(null, "Rol no autorizado, rol actual: " + usuarioActual.getRol().toString());
+            }
+        }
+
+        if (e.getSource() == ventanaNuevosUsuarios.getBtnCrearUsuario()) {
+            controladorCrearUsuarios.registrarUsuario();
         }
 
         if (e.getSource() == ventanaDashboard.getBotonAgregarUsuario()) {
-            navegarA(ventanaDashboard, ventanaNuevosUsuarios.getVentanaNuevosUsuarios());
+            if (usuarioActual.getRol() == Rol.Admin) {
+                ventanaDashboard.setVisible(false);
+                ventanaNuevosUsuarios.setVisible(true);
+            } else {
+                JOptionPane.showMessageDialog(null, "Rol no autorizado, rol actual: " + usuarioActual.getRol().toString());
+            }
+
         }
 
         if (e.getSource() == ventanaDashboard.getBotonReportes()) {
-            navegarA(ventanaDashboard, ventanaReportes.getVentanaReportes());
+            if (usuarioActual.getRol() == Rol.Admin || usuarioActual.getRol() == Rol.Operador) {
+                //ventanaDashboard.setVisible(false);
+                //ventanaReportes.g    private ControladorOperarioSala controladorSalas;etVentanaReportes().setVisible(true);
+            } else {
+                JOptionPane.showMessageDialog(null, "Rol no autorizado, rol actual: " + usuarioActual.getRol().toString());
+            }
+
         }
 
         if (e.getSource() == ventanaDashboard.getBotonControlSalas()) {
-            navegarA(ventanaDashboard, controladorSalas.getVista());
+            if (usuarioActual.getRol() == Rol.Operador || usuarioActual.getRol() == Rol.Admin) {
+                ventanaDashboard.setVisible(false);
+                controladorSalas.getVista().setVisible(true);
+            }
         }
-    }
 
-    private void NavegacionBotonesBack(ActionEvent e) {
-        // todos los botones Back vuelven al dashboard
+        //botones de back
         if (e.getSource() == controladorCarteleraNoEdit.getElegirPelicula().getVista().getBtnBack()) {
             volveraDashboard(controladorCarteleraNoEdit.getElegirPelicula().getVista());
         }
@@ -141,16 +155,27 @@ public class ControladorPrincipal implements ActionListener {
             volveraDashboard(controladorCartelera.getVistaCartelera());
         }
 
-        if (e.getSource() == ventanaNuevosUsuarios.getVentanaNuevosUsuarios().getBotonBack()) {
-            volveraDashboard(ventanaNuevosUsuarios.getVentanaNuevosUsuarios());
+        if (e.getSource() == ventanaNuevosUsuarios.getBotonBack()) {
+            volveraDashboard(ventanaNuevosUsuarios);
         }
 
-        if (e.getSource() == ventanaReportes.getVentanaReportes().getBotonBack()) {
+        /*
+        if (e.getSource() == ventanaReportes.getVentanaReportes().getBotonBack()){
             volveraDashboard(ventanaReportes.getVentanaReportes());
         }
 
+         */
+
         if (e.getSource() == controladorSalas.getVista().getBtnBack()) {
             volveraDashboard(controladorSalas.getVista());
+        }
+
+        if (e.getSource() == controladorCarteleraNoEdit.getElegirPelicula().getVentanaAsientos().getVentanaAsientos().getBtnBack()) {
+            volveraDashboard(controladorCarteleraNoEdit.getElegirPelicula().getVentanaAsientos().getVentanaAsientos());
+        }
+
+        if (e.getSource() == controladorCarteleraNoEdit.getElegirPelicula().getVentanaAsientos().getConfirmacionPagos().getVentana().getBtnBack()) {
+            volveraDashboard(controladorCarteleraNoEdit.getElegirPelicula().getVentanaAsientos().getConfirmacionPagos().getVentana());
         }
 
         if (ventanaAsientos != null && ventanaAsientos.getVentanaAsientos() != null
@@ -163,22 +188,47 @@ public class ControladorPrincipal implements ActionListener {
                 && e.getSource() == ventanaAsientos.getConfirmacionPagos().getVentana().getBtnBack()) {
             volveraDashboard(ventanaAsientos.getConfirmacionPagos().getVentana());
         }
+      
+
+        // LogOut
+        if (e.getSource() == ventanaDashboard.getBotonLogout()) {
+            String[] opciones = {"OK","Cerrar sesión"};
+
+            int seleccion = JOptionPane.showOptionDialog(
+                    null,
+                    "Nombre de usuario: " + usuarioActual.getNombre() + "\n" + "Rol actual: " + usuarioActual.getRol().toString(),
+                    "Usuario",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    opciones,
+                    opciones[0]
+            );
+
+            switch (seleccion) {
+                case 0:
+                    break;
+                case 1: // Botón "Ejecutar Función"
+                    System.out.println("Cerrando sesion...");
+                    ventanaDashboard.setVisible(false);
+                    ventanaInicio.setVisible(true);
+                    usuarioActual.setRol(Rol.Admin);
+                    usuarioActual.setNombre("");
+                    usuarioActual.setContrasena("");
+                    break;
+
+                case JOptionPane.CLOSED_OPTION: // Usuario cerró la ventana
+                    break;
+                default:
+                    System.out.println("Opción no reconocida");
+            }
+        }
     }
 
-    //metodo para navegar entre otras ventanas
-    private void navegarA(JFrame ventanaOrigen, JFrame ventanaDestino) {
-        if (ventanaOrigen != null) {
-            ventanaOrigen.setVisible(false);
-        }
-        if (ventanaDestino != null) {
-            ventanaDestino.setVisible(true);
-        }
-    }
-
-    //volver al dashboard
     public void volveraDashboard(JFrame ventanaActual) {
         gestorPeliculas.actualizarLista();
-        navegarA(ventanaActual, ventanaDashboard);
+        ventanaActual.setVisible(false);
+        ventanaDashboard.setVisible(true);
     }
 
     public static void main(String[] args) {

@@ -1,5 +1,7 @@
 package Controlador;
 
+import Modelo.ExportadorExcel;
+import Modelo.ExportadorPDF;
 import Vista.VentanaReportes;
 
 import javax.swing.*;
@@ -13,9 +15,14 @@ public class ControladorVentanaReportes implements ActionListener {
 
 
     VentanaReportes ventanaReportes;
+    ExportadorExcel excel;
+    ExportadorPDF PDF;
 
     public ControladorVentanaReportes() {
         ventanaReportes = new VentanaReportes();
+        excel = new ExportadorExcel();
+        PDF = new ExportadorPDF();
+
 
         ventanaReportes.getBtnGenerar().addActionListener(this);
         ventanaReportes.getBotonBack().addActionListener(this);
@@ -27,6 +34,7 @@ public class ControladorVentanaReportes implements ActionListener {
         if (e.getSource() == ventanaReportes.getBtnGenerar()) {
             String inicio = ventanaReportes.getTxtFechaInicio().getText().trim();
             String fin = ventanaReportes.getTxtFechaFin().getText().trim();
+            String formato= ventanaReportes.getComboTipoReporte().getSelectedItem().toString();
 
             if (inicio.isEmpty() || fin.isEmpty()) {
                 mostrarError("Ambas fechas son obligatorias.");
@@ -52,6 +60,13 @@ public class ControladorVentanaReportes implements ActionListener {
             }
 
             //si todo esta bien se llama a logica de generar reportes
+
+            if(formato.equalsIgnoreCase("Excel")){
+                //excel.exportar();
+            }
+            if(formato.equalsIgnoreCase("PDF")){
+                //PDF.exportar();
+            }
         }
     }
 

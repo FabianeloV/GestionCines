@@ -65,6 +65,26 @@ public class InicioSesionVentana extends JFrame {
         return botonAceptar;
     }
 
+    // Métodos getter para acceder a los valores de los campos desde otras clases
+    public String getUsuarioIngresado() {
+        return campoUsuario.getText().trim();
+    }
+
+    public String getClaveIngresada() {
+        return new String(campoClave.getPassword());
+    }
+
+    // Métodos para limpiar los campos
+    public void limpiarCampos() {
+        campoUsuario.setText("");
+        campoClave.setText("");
+    }
+
+    // Método para mostrar mensajes desde el controlador
+    public void mostrarMensaje(String mensaje, String titulo, int tipoMensaje) {
+        JOptionPane.showMessageDialog(this, mensaje, titulo, tipoMensaje);
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             new InicioSesionVentana().setVisible(true);
