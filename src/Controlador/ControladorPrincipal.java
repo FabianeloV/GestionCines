@@ -170,12 +170,12 @@ public class ControladorPrincipal implements ActionListener {
             volveraDashboard(controladorSalas.getVista());
         }
 
-        if (e.getSource() == controladorCarteleraNoEdit.getElegirPelicula().getVentanaAsientos().getVentanaAsientos().getBtnBack()) {
-            volveraDashboard(controladorCarteleraNoEdit.getElegirPelicula().getVentanaAsientos().getVentanaAsientos());
+        if (e.getSource() == controladorCarteleraNoEdit.getElegirPelicula().getVista().getBtnBack()) {
+            volveraDashboard(controladorCarteleraNoEdit.getElegirPelicula().getVista());
         }
 
-        if (e.getSource() == controladorCarteleraNoEdit.getElegirPelicula().getVentanaAsientos().getConfirmacionPagos().getVentana().getBtnBack()) {
-            volveraDashboard(controladorCarteleraNoEdit.getElegirPelicula().getVentanaAsientos().getConfirmacionPagos().getVentana());
+        if (e.getSource() == controladorCarteleraNoEdit.getVistaCarteleraNoEditable().getBtnBack()) {
+            volveraDashboard(controladorCarteleraNoEdit.getVistaCarteleraNoEditable());
         }
 
         if (ventanaAsientos != null && ventanaAsientos.getVentanaAsientos() != null
