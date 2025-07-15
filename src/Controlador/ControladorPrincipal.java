@@ -159,7 +159,7 @@ public class ControladorPrincipal implements ActionListener {
             volveraDashboard(ventanaNuevosUsuarios);
         }
 
-        /*
+        /*ssssss
         if (e.getSource() == ventanaReportes.getVentanaReportes().getBotonBack()){
             volveraDashboard(ventanaReportes.getVentanaReportes());
         }
