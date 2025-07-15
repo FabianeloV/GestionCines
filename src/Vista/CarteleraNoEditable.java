@@ -21,7 +21,7 @@ public class CarteleraNoEditable extends JFrame {
     private void initComponents() {
         setTitle("Cartelera de Cine");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(800, 600);
+        setSize(1000, 500);
         setLocationRelativeTo(null);
 
         panelPrincipal = new PanelConFondo("/Sources/Crea un hermoso degradado para tu diseño, generador de degradados CSS y PNG _ Gradients_app.jpeg");

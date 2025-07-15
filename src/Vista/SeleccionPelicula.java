@@ -12,9 +12,8 @@ public class SeleccionPelicula extends JFrame {
     private JComboBox<String> cbCiudad, cbTipoSala, cbFormato, cbIdiomas;
     private JTextField tfHora, tfFecha;
     private JLabel lblHora, lblFecha, lblFunciones, lblCiudad,
-            lblCantidad;
+            lblCantidad, lblTipoSala, lblFormato, lblIdiomas;
     private PanelConFondo panelFondo;
-
 
     public SeleccionPelicula() {
         initComponents();
@@ -32,72 +31,101 @@ public class SeleccionPelicula extends JFrame {
 
         // 2) crear componentes
         infoPelicula = new JTextArea(5, 20);
+        infoPelicula.setEditable(false);
 
         lblCantidad = new JLabel("Cantidad de Boletos:");
-        lblCantidad.setBounds(500, 20, 150, 25);
+        lblCantidad.setBounds(310, 260, 150, 25);
         lblCantidad.setForeground(Color.white);
         panelFondo.add(lblCantidad);
 
-        spinnerCantidad = new JSpinner(new SpinnerNumberModel(1, 1, 10, 1)); // de 1 a 10 boletos
+        spinnerCantidad = new JSpinner(new SpinnerNumberModel(1, 1, 10, 1));
         spinnerCantidad.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        spinnerCantidad.setBounds(500, 80, 50, 30);
+        spinnerCantidad.setBounds(310, 290, 50, 30);
         panelFondo.add(spinnerCantidad);
 
-
         btnContinuar = new JButton("Continuar");
-        cbCiudad = new JComboBox<>(new String[]{"Seleccionar", "Cuenca", "Azogues", "Gualaceo"});
-        cbTipoSala = new JComboBox<>(new String[]{"Salas", "VIP", "4D"});
-        cbFormato   = new JComboBox<>(new String[]{"Formatos", "2D", "3D", "4D"});
-        cbIdiomas   = new JComboBox<>(new String[]{"Idiomas", "Español", "Inglés"});
-        tfHora      = new JTextField();
-        tfFecha     = new JTextField();
-        lblHora     = new JLabel("Hora:");
-        lblFecha    = new JLabel("Fecha:");
-        lblFunciones= new JLabel("Funciones:");
-        lblCiudad   = new JLabel("Ciudad:");
 
-        btnBack = crearBotonPanel("", "/Sources/contorno-fino-de-punta-de-flecha-a-la-izquierda.png",20,30);
+        // ComboBoxes - inicializados vacíos, el controlador los llenará
+        cbCiudad = new JComboBox<>();
+        cbTipoSala = new JComboBox<>();
+        cbFormato = new JComboBox<>(new String[]{"Formatos", "2D", "3D", "4D"});
+        cbIdiomas = new JComboBox<>(new String[]{"Idiomas", "Español", "Inglés"});
+
+        tfHora = new JTextField();
+        tfFecha = new JTextField();
+
+        // Labels
+        lblHora = new JLabel("Hora:");
+        lblFecha = new JLabel("Fecha:");
+        lblFunciones = new JLabel("Funciones:");
+        lblCiudad = new JLabel("Ciudad:");
+        lblTipoSala = new JLabel("Sala:");
+        lblFormato = new JLabel("Formato:");
+        lblIdiomas = new JLabel("Idioma:");
+
+        // Botón Back
+        btnBack = crearBotonPanel("", "/Sources/contorno-fino-de-punta-de-flecha-a-la-izquierda.png", 20, 30);
         btnBack.setBounds(0, 0, 50, 50);
         btnBack.setOpaque(false);
         panelFondo.add(btnBack);
 
-        lblCiudad        .setBounds(310, 20, 110, 25);
+        // Posicionamiento de componentes
+        lblCiudad.setBounds(310, 20, 110, 25);
         lblCiudad.setForeground(Color.white);
         panelFondo.add(lblCiudad);
 
-        cbCiudad         .setBounds(310, 80, 110, 25);
+        cbCiudad.setBounds(310, 50, 110, 25);
         panelFondo.add(cbCiudad);
 
-        lblFunciones     .setBounds(310, 130, 100, 25);
+        lblTipoSala.setBounds(430, 20, 110, 25);
+        lblTipoSala.setForeground(Color.white);
+        panelFondo.add(lblTipoSala);
+
+        cbTipoSala.setBounds(430, 50, 150, 25);
+        panelFondo.add(cbTipoSala);
+
+        lblFunciones.setBounds(310, 90, 100, 25);
         lblFunciones.setForeground(Color.white);
-
         panelFondo.add(lblFunciones);
-        panelFondo.add(cbTipoSala);   cbTipoSala.setBounds(550, 190, 110, 25);
-        panelFondo.add(cbFormato);    cbFormato .setBounds(430, 190, 110, 25);
-        panelFondo.add(cbIdiomas);    cbIdiomas .setBounds(310, 190, 110, 25);
 
-        lblHora          .setBounds(460, 240, 50, 25);
+        lblIdiomas.setBounds(310, 120, 100, 25);
+        lblIdiomas.setForeground(Color.white);
+        panelFondo.add(lblIdiomas);
+
+        lblFormato.setBounds(430, 120, 100, 25);
+        lblFormato.setForeground(Color.white);
+        panelFondo.add(lblFormato);
+
+        cbIdiomas.setBounds(310, 150, 110, 25);
+        panelFondo.add(cbIdiomas);
+
+        cbFormato.setBounds(430, 150, 110, 25);
+        panelFondo.add(cbFormato);
+
+        lblHora.setBounds(460, 190, 50, 25);
         lblHora.setForeground(Color.white);
-
         panelFondo.add(lblHora);
-        tfHora           .setBounds(460, 300, 120, 25);
+
+        tfHora.setBounds(460, 220, 120, 25);
         panelFondo.add(tfHora);
-        lblFecha         .setBounds(310, 240, 60, 25);
+
+        lblFecha.setBounds(310, 190, 60, 25);
         lblFecha.setForeground(Color.white);
         panelFondo.add(lblFecha);
-        tfFecha          .setBounds(310, 300, 120, 25);
+
+        tfFecha.setBounds(310, 220, 120, 25);
         panelFondo.add(tfFecha);
 
-
-        infoPelicula     .setBounds(40, 110, 230, 160);
+        infoPelicula.setBounds(40, 110, 230, 160);
         panelFondo.add(new JScrollPane(infoPelicula));
 
-        btnContinuar     .setBounds(510, 360, 120, 25);
+        btnContinuar.setBounds(510, 360, 120, 25);
         panelFondo.add(btnContinuar);
 
+        // Configurar opacidad
         panelFondo.setOpaque(true);
         for (Component c : panelFondo.getComponents()) {
-            if (c instanceof JPanel) ((JPanel)c).setOpaque(false);
+            if (c instanceof JPanel) ((JPanel) c).setOpaque(false);
         }
 
         for (Component c : panelFondo.getComponents()) {
@@ -112,7 +140,8 @@ public class SeleccionPelicula extends JFrame {
     }
 
     private JButton crearBotonPanel(String texto, String iconoRuta, int x, int y) {
-        JButton boton = new JButton("<html><center>" + texto + "</center></html>", new ImageIcon(getClass().getResource(iconoRuta)));
+        JButton boton = new JButton("<html><center>" + texto + "</center></html>",
+                new ImageIcon(getClass().getResource(iconoRuta)));
         boton.setBounds(x, y, 160, 180);
         boton.setHorizontalTextPosition(JButton.CENTER);
         boton.setVerticalTextPosition(JButton.BOTTOM);
@@ -198,6 +227,17 @@ public class SeleccionPelicula extends JFrame {
         panelFondo.repaint();
     }
 
+    // Método para que el controlador actualice el máximo de boletos
+    public void actualizarMaximoBoletos(int maximo) {
+        SpinnerNumberModel model = (SpinnerNumberModel) spinnerCantidad.getModel();
+        model.setMaximum(maximo);
+
+        // Si el valor actual es mayor al máximo, ajustarlo
+        if ((Integer) spinnerCantidad.getValue() > maximo) {
+            spinnerCantidad.setValue(maximo);
+        }
+    }
+
     public JButton getBtnContinuar() {
         return btnContinuar;
     }
@@ -212,6 +252,22 @@ public class SeleccionPelicula extends JFrame {
 
     public JTextField getTfFecha() {
         return tfFecha;
+    }
+
+    public JComboBox<String> getCbCiudad() {
+        return cbCiudad;
+    }
+
+    public JComboBox<String> getCbTipoSala() {
+        return cbTipoSala;
+    }
+
+    public JComboBox<String> getCbFormato() {
+        return cbFormato;
+    }
+
+    public JComboBox<String> getCbIdiomas() {
+        return cbIdiomas;
     }
 
     public int getCantidadBoletos() {

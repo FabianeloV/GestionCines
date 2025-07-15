@@ -188,7 +188,7 @@ public class ControladorPrincipal implements ActionListener {
                 && e.getSource() == ventanaAsientos.getConfirmacionPagos().getVentana().getBtnBack()) {
             volveraDashboard(ventanaAsientos.getConfirmacionPagos().getVentana());
         }
-
+      
 
         // LogOut
         if (e.getSource() == ventanaDashboard.getBotonLogout()) {
@@ -235,4 +235,3 @@ public class ControladorPrincipal implements ActionListener {
         new ControladorPrincipal();
     }
 }
-
