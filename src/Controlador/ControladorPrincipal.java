@@ -20,7 +20,7 @@ public class ControladorPrincipal implements ActionListener {
     private CarteleraNoEditControlador controladorCarteleraNoEdit;
     private ControladorCrearUsuarios controladorCrearUsuarios;
     private VentanaNuevosUsuarios ventanaNuevosUsuarios;
-    //private ControladorVentanaReportes ventanaReportes;
+    private ControladorVentanaReportes ventanaReportes;
     private ControladorVentanaAsientos ventanaAsientos;
     private ControladorInicioSesion controladorInicioSesion;
     private ControladorOperarioSala controladorSalas;
@@ -35,7 +35,7 @@ public class ControladorPrincipal implements ActionListener {
         controladorCartelera = new CarteleraControlador();
         controladorCarteleraNoEdit = new CarteleraNoEditControlador();
         gestorPeliculas = new GestorPelicula();
-        //ventanaReportes = new ControladorVentanaReportes();
+        ventanaReportes = new ControladorVentanaReportes();
         ventanaAsientos = new ControladorVentanaAsientos();
         controladorInicioSesion = new ControladorInicioSesion(ventanaInicio);
         ventanaNuevosUsuarios = new VentanaNuevosUsuarios();
@@ -82,7 +82,7 @@ public class ControladorPrincipal implements ActionListener {
             ventanaAsientos.getConfirmacionPagos().getVentana().getBtnBack().addActionListener(this);
         }
 
-        //ventanaReportes.getVentanaReportes().getBotonBack().addActionListener(this);
+        ventanaReportes.getVentanaReportes().getBotonBack().addActionListener(this);
         ventanaInicio.setVisible(true);
     }
 
@@ -127,8 +127,8 @@ public class ControladorPrincipal implements ActionListener {
 
         if (e.getSource() == ventanaDashboard.getBotonReportes()) {
             if (usuarioActual.getRol() == Rol.Admin || usuarioActual.getRol() == Rol.Operador) {
-                //ventanaDashboard.setVisible(false);
-                //ventanaReportes.g    private ControladorOperarioSala controladorSalas;etVentanaReportes().setVisible(true);
+                ventanaDashboard.setVisible(false);
+                ventanaReportes.ventanaReportes.setVisible(true);
             } else {
                 JOptionPane.showMessageDialog(null, "Rol no autorizado, rol actual: " + usuarioActual.getRol().toString());
             }
@@ -159,23 +159,21 @@ public class ControladorPrincipal implements ActionListener {
             volveraDashboard(ventanaNuevosUsuarios);
         }
 
-        /*
+
         if (e.getSource() == ventanaReportes.getVentanaReportes().getBotonBack()){
             volveraDashboard(ventanaReportes.getVentanaReportes());
         }
 
-         */
 
         if (e.getSource() == controladorSalas.getVista().getBtnBack()) {
             volveraDashboard(controladorSalas.getVista());
         }
 
-        if (e.getSource() == controladorCarteleraNoEdit.getElegirPelicula().getVentanaAsientos().getVentanaAsientos().getBtnBack()) {
-            volveraDashboard(controladorCarteleraNoEdit.getElegirPelicula().getVentanaAsientos().getVentanaAsientos());
-        }
+        if (e.getSource() == controladorCarteleraNoEdit.getVistaCarteleraNoEditable().getBtnBack()) {
+            volveraDashboard(controladorCarteleraNoEdit.getVistaCarteleraNoEditable()); }
 
-        if (e.getSource() == controladorCarteleraNoEdit.getElegirPelicula().getVentanaAsientos().getConfirmacionPagos().getVentana().getBtnBack()) {
-            volveraDashboard(controladorCarteleraNoEdit.getElegirPelicula().getVentanaAsientos().getConfirmacionPagos().getVentana());
+        if (e.getSource() == controladorCarteleraNoEdit.getElegirPelicula().getVista().getBtnBack()) {
+            volveraDashboard(controladorCarteleraNoEdit.getElegirPelicula().getVista());
         }
 
         if (ventanaAsientos != null && ventanaAsientos.getVentanaAsientos() != null

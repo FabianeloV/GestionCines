@@ -2,6 +2,7 @@ package Vista;
 
 import javax.swing.*;
 import java.awt.*;
+import com.toedter.calendar.JDateChooser;
 
 public class VentanaReportes extends JFrame {
 
@@ -14,6 +15,8 @@ public class VentanaReportes extends JFrame {
     private JButton BotonBack;
     private JComboBox<String> comboTipoReporte;
     private JComboBox<String> comboFormatoReporte;
+    private JDateChooser fechaInicio;
+    private JDateChooser fechaFin;
     private JTextField txtFechaInicio;
     private JTextField txtFechaFin;
     private JButton btnGenerar;
@@ -86,12 +89,13 @@ public class VentanaReportes extends JFrame {
         panelDerecho.add(lblFechaFin);
 
         txtFechaInicio = new JTextField();
-        txtFechaInicio.setBounds(60, 290, 100, 25);
-        panelDerecho.add(txtFechaInicio);
+        fechaInicio = new JDateChooser();
+        fechaInicio.setBounds(60, 290, 100, 25);
+        panelDerecho.add(fechaInicio);
 
-        txtFechaFin = new JTextField();
-        txtFechaFin.setBounds(200, 290, 100, 25);
-        panelDerecho.add(txtFechaFin);
+        fechaFin = new JDateChooser();
+        fechaFin.setBounds(200, 290, 100, 25);
+        panelDerecho.add(fechaFin);
 
         btnGenerar = new JButton("Generar");
         btnGenerar.setBounds(130, 340, 100, 30);
@@ -123,16 +127,15 @@ public class VentanaReportes extends JFrame {
         return comboFormatoReporte;
     }
 
-    public JTextField getTxtFechaInicio() {
-        return txtFechaInicio;
-    }
-
-    public JTextField getTxtFechaFin() {
-        return txtFechaFin;
-    }
-
     public JButton getBtnGenerar() {
         return btnGenerar;
     }
 
+    public JDateChooser getFechaInicio() {
+        return fechaInicio;
+    }
+
+    public JDateChooser getFechaFin() {
+        return fechaFin;
+    }
 }
