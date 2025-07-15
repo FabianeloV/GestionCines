@@ -173,6 +173,7 @@ public class ControladorPrincipal implements ActionListener {
 
         if (e.getSource() == controladorCarteleraNoEdit.getElegirPelicula().getVista().getBtnBack()) {
             volveraDashboard(controladorCarteleraNoEdit.getElegirPelicula().getVista());
+        }
 
         if (e.getSource() == controladorCarteleraNoEdit.getElegirPelicula().getVista().getBtnBack()) {
             volveraDashboard(controladorCarteleraNoEdit.getElegirPelicula().getVista());
