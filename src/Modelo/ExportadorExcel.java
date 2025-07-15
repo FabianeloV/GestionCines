@@ -9,9 +9,9 @@ import java.util.List;
 
 public class ExportadorExcel {
 
-    public static void exportar(List<Reporte> reportes, String nombreArchivo) {
-        Workbook workbook = new XSSFWorkbook(); // Crea el libro de Excel
-        Sheet sheet = workbook.createSheet("Reporte Cine"); // Hoja con el nombre "Reporte Cine"
+    public void exportar(String nombreArchivo, String[] encabezados, List<Object[]> datos) {
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("Reporte");
 
         // Estilo para encabezados (negrita)
         CellStyle estiloEncabezado = workbook.createCellStyle();
@@ -19,36 +19,37 @@ public class ExportadorExcel {
         fuente.setBold(true);
         estiloEncabezado.setFont(fuente);
 
-        // Crear fila de encabezado
-        Row encabezado = sheet.createRow(0);
-        encabezado.createCell(0).setCellValue("Tipo de Reporte");
-        encabezado.createCell(1).setCellValue("Fecha");
-        encabezado.createCell(2).setCellValue("Valor ($)");
-
-        for (Cell cell : encabezado) {
-            cell.setCellStyle(estiloEncabezado);
+        // Crear fila encabezado
+        Row filaEncabezado = sheet.createRow(0);
+        for (int i = 0; i < encabezados.length; i++) {
+            Cell celda = filaEncabezado.createCell(i);
+            celda.setCellValue(encabezados[i]);
+            celda.setCellStyle(estiloEncabezado);
         }
 
-        // Llenar datos de cada reporte
-        int fila = 1; // comenzamos en la fila 1 (después del encabezado)
-        for (Reporte r : reportes) {
-            Row row = sheet.createRow(fila++);
-            row.createCell(0).setCellValue(r.getCategoriaReporte());
-            row.createCell(1).setCellValue(r.getFecha().toString());
-            row.createCell(2).setCellValue(r.getValor());
+        // Rellenar datos
+        int filaNum = 1;
+        for (Object[] filaDatos : datos) {
+            Row fila = sheet.createRow(filaNum++);
+            for (int i = 0; i < filaDatos.length; i++) {
+                if (filaDatos[i] != null) {
+                    fila.createCell(i).setCellValue(filaDatos[i].toString());
+                }
+            }
         }
 
-        // Ajustar ancho de columnas automáticamente
-        for (int i = 0; i < 3; i++) {
+        // Ajustar ancho columnas
+        for (int i = 0; i < encabezados.length; i++) {
             sheet.autoSizeColumn(i);
         }
 
-        // Guardar el archivo en el disco
-        try (FileOutputStream fileOut = new FileOutputStream(nombreArchivo)) {
+        // Guardar archivo
+        try (FileOutputStream fileOut = new FileOutputStream(nombreArchivo + ".xlsx")) {
             workbook.write(fileOut);
             workbook.close();
             System.out.println("Archivo Excel '" + nombreArchivo + "' exportado correctamente.");
         } catch (IOException e) {
+            e.printStackTrace();
             System.out.println("Error al exportar Excel: " + e.getMessage());
         }
     }

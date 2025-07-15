@@ -159,7 +159,6 @@ public class ControladorPrincipal implements ActionListener {
             volveraDashboard(ventanaNuevosUsuarios);
         }
 
-
         if (e.getSource() == ventanaReportes.getVentanaReportes().getBotonBack()){
             volveraDashboard(ventanaReportes.getVentanaReportes());
         }
@@ -168,12 +167,19 @@ public class ControladorPrincipal implements ActionListener {
         if (e.getSource() == controladorSalas.getVista().getBtnBack()) {
             volveraDashboard(controladorSalas.getVista());
         }
-
+      
         if (e.getSource() == controladorCarteleraNoEdit.getVistaCarteleraNoEditable().getBtnBack()) {
             volveraDashboard(controladorCarteleraNoEdit.getVistaCarteleraNoEditable()); }
 
         if (e.getSource() == controladorCarteleraNoEdit.getElegirPelicula().getVista().getBtnBack()) {
             volveraDashboard(controladorCarteleraNoEdit.getElegirPelicula().getVista());
+
+        if (e.getSource() == controladorCarteleraNoEdit.getElegirPelicula().getVista().getBtnBack()) {
+            volveraDashboard(controladorCarteleraNoEdit.getElegirPelicula().getVista());
+        }
+
+        if (e.getSource() == controladorCarteleraNoEdit.getVistaCarteleraNoEditable().getBtnBack()) {
+            volveraDashboard(controladorCarteleraNoEdit.getVistaCarteleraNoEditable());
         }
 
         if (ventanaAsientos != null && ventanaAsientos.getVentanaAsientos() != null
