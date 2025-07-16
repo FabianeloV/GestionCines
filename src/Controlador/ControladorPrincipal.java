@@ -25,6 +25,7 @@ public class ControladorPrincipal implements ActionListener {
     private ControladorInicioSesion controladorInicioSesion;
     private ControladorOperarioSala controladorSalas;
 
+
     public ControladorPrincipal() {
         iniciarComponentes();
     }
@@ -82,7 +83,7 @@ public class ControladorPrincipal implements ActionListener {
             ventanaAsientos.getConfirmacionPagos().getVentana().getBtnBack().addActionListener(this);
         }
 
-        ventanaReportes.getVentanaReportes().getBotonBack().addActionListener(this);
+        //ventanaReportes.getVentanaReportes().getBotonBack().addActionListener(this);
         ventanaInicio.setVisible(true);
     }
 
@@ -128,7 +129,7 @@ public class ControladorPrincipal implements ActionListener {
         if (e.getSource() == ventanaDashboard.getBotonReportes()) {
             if (usuarioActual.getRol() == Rol.Admin || usuarioActual.getRol() == Rol.Operador) {
                 ventanaDashboard.setVisible(false);
-                ventanaReportes.ventanaReportes.setVisible(true);
+                //ventanaReportes.ventanaReportes.setVisible(true);
             } else {
                 JOptionPane.showMessageDialog(null, "Rol no autorizado, rol actual: " + usuarioActual.getRol().toString());
             }
@@ -159,15 +160,15 @@ public class ControladorPrincipal implements ActionListener {
             volveraDashboard(ventanaNuevosUsuarios);
         }
 
-        if (e.getSource() == ventanaReportes.getVentanaReportes().getBotonBack()){
+        /*if (e.getSource() == ventanaReportes.getVentanaReportes().getBotonBack()){
             volveraDashboard(ventanaReportes.getVentanaReportes());
-        }
+        }*/
 
 
         if (e.getSource() == controladorSalas.getVista().getBtnBack()) {
             volveraDashboard(controladorSalas.getVista());
         }
-      
+
         if (e.getSource() == controladorCarteleraNoEdit.getVistaCarteleraNoEditable().getBtnBack()) {
             volveraDashboard(controladorCarteleraNoEdit.getVistaCarteleraNoEditable()); }
 
@@ -193,7 +194,7 @@ public class ControladorPrincipal implements ActionListener {
                 && e.getSource() == ventanaAsientos.getConfirmacionPagos().getVentana().getBtnBack()) {
             volveraDashboard(ventanaAsientos.getConfirmacionPagos().getVentana());
         }
-      
+
 
         // LogOut
         if (e.getSource() == ventanaDashboard.getBotonLogout()) {

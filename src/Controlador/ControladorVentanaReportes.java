@@ -30,6 +30,10 @@ public class ControladorVentanaReportes implements ActionListener {
         this.ventanaReportes.getBtnGenerar().addActionListener(this);
     }
 
+    public ControladorVentanaReportes() {
+
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == ventanaReportes.getBtnGenerar()) {
