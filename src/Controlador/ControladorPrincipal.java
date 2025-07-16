@@ -45,6 +45,7 @@ public class ControladorPrincipal implements ActionListener {
 
         gestorPeliculas.actualizarLista();
 
+        vistaReportes.getBotonBack().addActionListener(this);
         ventanaInicio.getBotonAceptar().addActionListener(this);
         ventanaDashboard.getBotonAgregarUsuario().addActionListener(this);
         ventanaDashboard.getBotonCartelera().addActionListener(this);
@@ -127,11 +128,14 @@ public class ControladorPrincipal implements ActionListener {
         }
 
         if (e.getSource() == ventanaDashboard.getBotonReportes()) {
-            if (usuarioActual.getRol() == Rol.Admin || usuarioActual.getRol() == Rol.Operador) {
+            if (usuarioActual.getRol() == Rol.Admin ||
+                    usuarioActual.getRol() == Rol.Operador) {
                 ventanaDashboard.setVisible(false);
-                ventanaReportes.ventanaReportes.setVisible(true);
+                ventanaReportes.getVentanaReportes().setVisible(true);
             } else {
-                JOptionPane.showMessageDialog(null, "Rol no autorizado, rol actual: " + usuarioActual.getRol().toString());
+                JOptionPane.showMessageDialog(null,
+                        "Rol no autorizado, rol actual: " +
+                                usuarioActual.getRol().toString());
             }
 
         }

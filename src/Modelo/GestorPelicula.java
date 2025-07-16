@@ -16,10 +16,8 @@ public class GestorPelicula implements Serializable {
         return peliculas;
     }
 
-
     public void añadirPelicula() {
-
-        peliculas=leerPeliculasDesdeArchivo("peliculas.dat");
+        peliculas = leerPeliculasDesdeArchivo("peliculas.dat");
 
         String nombre = JOptionPane.showInputDialog(null, "Ingrese el nombre de la película:");
         String duracion = JOptionPane.showInputDialog(null, "Ingrese la duración de la película:");
@@ -51,11 +49,8 @@ public class GestorPelicula implements Serializable {
         guardarEstadoActual("peliculas.dat");
     }
 
-
-
-
     public void eliminarPelicula(int indice) {
-        peliculas=leerPeliculasDesdeArchivo("peliculas.dat");
+        peliculas = leerPeliculasDesdeArchivo("peliculas.dat");
         if (indice >= 0 && indice < peliculas.size()) {
             peliculas.remove(indice);
         }
@@ -138,7 +133,6 @@ public class GestorPelicula implements Serializable {
         guardarEstadoActual("peliculas.dat");
     }
 
-
     public int buscarPelicula(String nombre) {
         actualizarLista();
 
@@ -162,7 +156,7 @@ public class GestorPelicula implements Serializable {
                 continue;
             }
 
-            indice =buscarPelicula(nombre);
+            indice = buscarPelicula(nombre);
             if(indice == -1) {
                 JOptionPane.showMessageDialog(null, "Película no encontrada");
             }
@@ -171,7 +165,6 @@ public class GestorPelicula implements Serializable {
     }
 
     public void guardarPeliculasDeEjemplo(String rutaArchivo) {
-
         Pelicula p1 = new Pelicula(
                 "Lilo y Stitch",
                 "Lilo es una niña hawaiana solitaria que adopta a un perro que en realidad es un extraterrestre travieso que se esconde de unos cazadores intergalácticos.",
@@ -194,19 +187,64 @@ public class GestorPelicula implements Serializable {
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(rutaArchivo))) {
             out.writeObject(peliculas);
             out.flush();
-            out.close();
             System.out.println("Películas de ejemplo guardadas correctamente.");
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(null, "Error al guardar el archivo.");
         }
     }
 
+    // MÉTODO CORREGIDO - Esta es la solución principal
     public ArrayList<Pelicula> leerPeliculasDesdeArchivo(String rutaArchivo) {
         ArrayList<Pelicula> leidas = new ArrayList<>();
+        File archivo = new File(rutaArchivo);
+
+        // Verificar si el archivo existe
+        if (!archivo.exists()) {
+            System.out.println("Archivo no existe: " + rutaArchivo + ". Creando lista vacía.");
+            return leidas;
+        }
+
+        // Verificar si el archivo está vacío
+        if (archivo.length() == 0) {
+            System.out.println("Archivo vacío: " + rutaArchivo + ". Creando lista vacía.");
+            return leidas;
+        }
 
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(rutaArchivo))) {
-            leidas = (ArrayList<Pelicula>) in.readObject();
-        } catch (IOException | ClassNotFoundException e) {
+            Object obj = in.readObject();
+            if (obj instanceof ArrayList) {
+                leidas = (ArrayList<Pelicula>) obj;
+                System.out.println("Películas cargadas exitosamente: " + leidas.size() + " películas.");
+            } else {
+                System.err.println("El archivo no contiene una lista de películas válida.");
+            }
+        } catch (StreamCorruptedException e) {
+            System.err.println("ARCHIVO CORRUPTO DETECTADO: " + rutaArchivo);
+            System.err.println("El archivo parece contener datos de texto en lugar de objetos Java.");
+
+            // Crear backup del archivo corrupto
+            File backup = new File(rutaArchivo + ".corrupto.backup");
+            if (archivo.renameTo(backup)) {
+                System.out.println("Archivo corrupto respaldado como: " + backup.getAbsolutePath());
+            }
+
+            // Crear películas de ejemplo para no perder funcionalidad
+            System.out.println("Creando películas de ejemplo...");
+            guardarPeliculasDeEjemplo(rutaArchivo);
+
+            // Intentar cargar nuevamente
+            try (ObjectInputStream in2 = new ObjectInputStream(new FileInputStream(rutaArchivo))) {
+                leidas = (ArrayList<Pelicula>) in2.readObject();
+                System.out.println("Películas de ejemplo cargadas exitosamente.");
+            } catch (Exception e2) {
+                System.err.println("Error al cargar películas de ejemplo: " + e2.getMessage());
+            }
+
+        } catch (IOException e) {
+            System.err.println("Error de E/S al leer el archivo: " + e.getMessage());
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            System.err.println("Clase no encontrada al deserializar: " + e.getMessage());
             e.printStackTrace();
         }
 
@@ -216,13 +254,32 @@ public class GestorPelicula implements Serializable {
     public void guardarEstadoActual(String NombreArchivo) {
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(NombreArchivo))) {
             out.writeObject(peliculas);
+            System.out.println("Estado actual guardado exitosamente en: " + NombreArchivo);
         } catch (IOException e) {
             System.err.println("Error al guardar el estado actual:");
             e.printStackTrace();
         }
     }
-     public void actualizarLista(){
-        peliculas = leerPeliculasDesdeArchivo("peliculas.dat");
-     }
 
+    public void actualizarLista(){
+        peliculas = leerPeliculasDesdeArchivo("peliculas.dat");
+    }
+
+    // MÉTODO ADICIONAL: Para recuperación manual si es necesario
+    public void recuperarArchivo() {
+        System.out.println("Iniciando recuperación del archivo...");
+
+        // Eliminar archivo corrupto si existe
+        File archivoCorrupto = new File("peliculas.dat");
+        if (archivoCorrupto.exists()) {
+            archivoCorrupto.delete();
+            System.out.println("Archivo corrupto eliminado.");
+        }
+
+        // Crear nuevo archivo con datos de ejemplo
+        peliculas = new ArrayList<>();
+        guardarPeliculasDeEjemplo("peliculas.dat");
+
+        System.out.println("Archivo recuperado exitosamente.");
+    }
 }

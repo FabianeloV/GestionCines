@@ -169,7 +169,7 @@ public class ControladorSeleccionPelicula implements ActionListener {
             return false;
         }
 
-        if (vista.getTfFecha().getText().trim().isEmpty()) {
+        if (vista.getFecha().getDate()== null) {
             mostrarError("Por favor ingrese la fecha");
             return false;
         }

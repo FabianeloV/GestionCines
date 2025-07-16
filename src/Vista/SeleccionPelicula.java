@@ -279,4 +279,7 @@ public class SeleccionPelicula extends JFrame {
         return (int) spinnerCantidad.getValue();
     }
 
+    public JDateChooser getFecha() {
+        return fecha;
+    }
 }
