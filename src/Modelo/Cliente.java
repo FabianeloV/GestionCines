@@ -1,12 +1,15 @@
 package Modelo;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Cliente {
+public class Cliente implements Serializable {
+    private static final long serialVersionUID = 1L;
     String nombre;
     String cedula;
     Date ultimaCompra;
     Float acumuladoVentas = 0F;
+    private String correo;
 
     public Cliente(String nombre, String cedula, Date ultimaCompra, Float acumuladoVentas) {
         this.nombre = nombre;
@@ -39,11 +42,38 @@ public class Cliente {
         this.ultimaCompra = ultimaCompra;
     }
 
-    public Float getAcumuladoVentas() {
+    public Float getTotalCompras() {
         return acumuladoVentas;
     }
 
     public void setAcumuladoVentas(Float acumuladoVentas) {
         this.acumuladoVentas = acumuladoVentas;
+    }
+
+
+    public void setTotalCompras(Float totalCompras) {
+        this.acumuladoVentas = totalCompras;
+    }
+
+    public void agregarCompra(Float montoCompra) {
+        this.acumuladoVentas += montoCompra;
+    }
+
+    public String getCorreo() {
+        return correo;
+    }
+
+    public void setCorreo(String correo) {
+        this.correo = correo;
+    }
+
+    @Override
+    public String toString() {
+        return "Cliente{" +
+                "nombre='" + nombre + '\'' +
+                ", cedula='" + cedula + '\'' +
+                ", correo='" + correo + '\'' +
+                ", totalCompras=" + acumuladoVentas +
+                '}';
     }
 }

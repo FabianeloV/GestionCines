@@ -62,7 +62,7 @@ public class ListadoClientesControlador implements ActionListener {
         vistaClientes.Compras.setText("");
 
         clientes.forEach(it -> {
-            vistaClientes.Compras.append(it.getAcumuladoVentas() + " $\n");
+            vistaClientes.Compras.append(it.getTotalCompras() + " $\n");
         });
 
     }
@@ -73,7 +73,7 @@ public class ListadoClientesControlador implements ActionListener {
         } else if (vistaClientes.FechaRadio.isSelected()){
             clientes.sort(Comparator.comparing(Cliente::getUltimaCompra));
         } else {
-            clientes.sort(Comparator.comparing(Cliente::getAcumuladoVentas));
+            clientes.sort(Comparator.comparing(Cliente::getTotalCompras));
         }
 
     }

@@ -9,6 +9,8 @@ import Modelo.Venta;
 import Modelo.GestorAsistencia;
 import Modelo.Asistencia;
 import Modelo.SistemaSalas;
+import Modelo.GestorCliente;
+import Modelo.Cliente;
 import Vista.VentanaReportes;
 
 import javax.swing.*;
@@ -28,9 +30,9 @@ public class ControladorVentanaReportes implements ActionListener {
     private GestorVentas gestorVentas;
     private GestorAsistencia gestorAsistencia;
     private SistemaSalas sistemaSalas;
+    private GestorCliente gestorCliente; // Nuevo gestor agregado
     private ExportadorPDF exportadorPDF;
     private ExportadorExcel exportadorExcel;
-
 
     public ControladorVentanaReportes(VentanaReportes ventanaReportes) {
         this.ventanaReportes = ventanaReportes;
@@ -38,6 +40,7 @@ public class ControladorVentanaReportes implements ActionListener {
         this.gestorVentas = new GestorVentas();
         this.gestorAsistencia = new GestorAsistencia();
         this.sistemaSalas = new SistemaSalas();
+        this.gestorCliente = new GestorCliente(); // Inicializar el gestor de clientes
         this.exportadorPDF = new ExportadorPDF();
         this.exportadorExcel = new ExportadorExcel();
 
@@ -109,7 +112,7 @@ public class ControladorVentanaReportes implements ActionListener {
                     generarReporteCartelera(formato, fechaInicio, fechaFin);
                     break;
                 case "Asistencia":
-                    generarReporteAsistencia(formato, fechaInicio, fechaFin);
+                    generarReporteClientes(formato, fechaInicio, fechaFin); // Modificado para generar reporte de clientes
                     break;
                 case "Ocupacion Salas":
                     generarReporteOcupacionSalas(formato, fechaInicio, fechaFin);
@@ -208,6 +211,39 @@ public class ControladorVentanaReportes implements ActionListener {
         exportarReporte("Reporte Cartelera", encabezados, datosReporte, formato, rangoFechas);
     }
 
+    /**
+     * Genera un reporte de todos los clientes registrados
+     * Ignora el rango de fechas y lista todos los clientes
+     */
+    private void generarReporteClientes(String formato, Date fechaInicio, Date fechaFin) {
+        List<Cliente> todosLosClientes = gestorCliente.obtenerTodosLosClientes();
+
+        if (todosLosClientes.isEmpty()) {
+            mostrarError("No hay clientes registrados para generar el reporte.");
+            return;
+        }
+
+        String[] encabezados = {"Nombre", "Cédula", "Correo", "Última Compra", "Total Compras"};
+        SimpleDateFormat fechaFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+        List<Object[]> datosReporte = todosLosClientes.stream()
+                .map(c -> new Object[]{
+                        c.getNombre() != null ? c.getNombre() : "N/A",
+                        c.getCedula() != null ? c.getCedula() : "N/A",
+                        c.getCorreo() != null ? c.getCorreo() : "N/A",
+                        c.getUltimaCompra() != null ? fechaFormat.format(c.getUltimaCompra()) : "N/A",
+                        String.format("$%.2f", c.getTotalCompras() != null ? c.getTotalCompras() : 0.0f)
+                })
+                .collect(Collectors.toList());
+
+        // Usar "Todos los clientes" en lugar del rango de fechas
+        String rangoInfo = "Todos los clientes registrados";
+        exportarReporte("Reporte Clientes", encabezados, datosReporte, formato, rangoInfo);
+    }
+
+    /**
+     * Genera reporte de asistencia original (mantiene funcionalidad anterior)
+     */
     private void generarReporteAsistencia(String formato, Date fechaInicio, Date fechaFin) {
         List<Asistencia> asistencias = gestorAsistencia.getAsistencias().stream()
                 .filter(a -> !a.getFecha().before(fechaInicio) && !a.getFecha().after(fechaFin))
